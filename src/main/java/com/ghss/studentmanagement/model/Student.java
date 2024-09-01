@@ -26,15 +26,12 @@ public class Student {
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Enrollment> enrollments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<FeePayment> feePayments = new ArrayList<>();
-
     public void addEnrollment(Enrollment enrollment){
         enrollment.setStudent(this);
         enrollment.setEnrollmentDate(LocalDate.now());
         enrollments.add(enrollment);
     }
     public void addFeePayment(){
-        
+
     }
 }
