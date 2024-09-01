@@ -1,0 +1,42 @@
+Solve below problem statement:
+
+ 
+
+Design Fullstack app for Student Management for below:(To be completed in 1 week)
+
+ 
+
+Come up with below artifacts for Demo
+
+a) Design
+
+c) ER
+
+d) API Contract
+
+e) Component Diagram
+
+f) Backend and Front end Code base
+
+ 
+
+For Any Data Manipulation:
+
+Load the data from database into java collections based memory while starting the application.
+
+No further database query is allowed while invoking APIs.
+
+ 
+
+Find the Nth Student by Enrollment Date with the Highest Pending Fee
+
+Retrieve Students Who Have Not Paid Any Fees in the Last Year but Have Enrolled in Multiple Courses
+
+Get the Average Fee Collected Per Student for Each Enrollment Batch
+
+Find the Top 5 Students with the Longest Delinquent Fee Payment History
+
+Determine Students Who Have Enrolled in All Available Courses but Have Not Paid Their Fees
+
+ 
+
