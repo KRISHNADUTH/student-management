@@ -1,0 +1,5 @@
+CREATE TABLE COURSE(
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    course_name VARCHAR(255),
+    course_fee DOUBLE
+);

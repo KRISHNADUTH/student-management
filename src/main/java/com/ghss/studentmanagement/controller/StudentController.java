@@ -1,24 +1,31 @@
 package com.ghss.studentmanagement.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ghss.studentmanagement.dto.ResponseDto;
 import com.ghss.studentmanagement.dto.StudentDto;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import com.ghss.studentmanagement.service.impl.StudentServiceImpl;
+
 
 @RestController
 @RequestMapping(path = "/students", produces = MediaType.APPLICATION_JSON_VALUE)
 public class StudentController {
     
-    
-    
-    @PostMapping("/add-student")
-    public ResponseEntity<ResponseDto> addStudent(@RequestBody StudentDto studentDto){
+    @Autowired
+    StudentServiceImpl studentServiceImpl;
 
-        return null;
+    @PostMapping("/add-student")
+    public ResponseEntity<ResponseDto> addStudent(@RequestBody StudentDto studentDto) {
+        System.out.println("55555555555555555555555555555555555555555555555555555555555555555555555"+studentDto);
+        studentServiceImpl.addStudent(studentDto);
+        System.out.println(studentDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDto("201", "Student added"));
     }
 }

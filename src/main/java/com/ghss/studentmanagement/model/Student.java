@@ -31,7 +31,4 @@ public class Student {
         enrollment.setEnrollmentDate(LocalDate.now());
         enrollments.add(enrollment);
     }
-    public void addFeePayment(){
-
-    }
 }

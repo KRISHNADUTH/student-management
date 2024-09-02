@@ -8,15 +8,9 @@ public class StudentMapper {
     // CourseRepository courseRepository;
 
     public static Student mapToSrudent(StudentDto studentDto, Student student) {
-        student.setEnrollmentDate(studentDto.getEnrollmentDate());
+        // student.setEnrollmentDate(studentDto.getEnrollmentDate());
         student.setName(studentDto.getName());
-        student.setPendingFee(studentDto.getPendingFee());
-        // List<CourseDto> courseDtos = studentDto.getCourses();
-        // for(CourseDto courseDto: courseDtos){
-        //     Enrollment newEnrollment = new Enrollment();
-        //     courseRepository
-        //     newEnrollment.setCourse(course);
-        // }  
+        // student.setPendingFee(studentDto.getPendingFee());
         return student;
     }
 
