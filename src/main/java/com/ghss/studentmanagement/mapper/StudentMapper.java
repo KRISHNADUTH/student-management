@@ -22,19 +22,23 @@ public class StudentMapper {
         student.setName(studentDto.getName());
         List<CourseDto> courseDtos = studentDto.getCourses();
             int pendingFee = 0;
+            int totalFees = 0;
+            int paidFees = 0;
             for (CourseDto courseDto : courseDtos) {
                 Enrollment newEnrollment = new Enrollment(student.getEnrollmentDate());
                 Course course = StudentManagementService.findByCourseName(courseDto.getCourseName().toLowerCase()).get();
-                pendingFee+=course.getCourseFee();
+                totalFees+=course.getCourseFee();
+                paidFees+=courseDto.getCourseFee();
                 course.addEnrollment(newEnrollment);
                 student.addEnrollment(newEnrollment);
             }
+            pendingFee = totalFees-paidFees;
             student.setPendingFee(pendingFee);
         
         return student;
     }
 
-    public static StudentDto mapToStudentDto(Student student, StudentDto studentDto){
+    public static StudentDto  mapToStudentDto(Student student, StudentDto studentDto){
         studentDto.setEnrollmentDate(student.getEnrollmentDate());
         studentDto.setName(student.getName());
         List<CourseDto> courseDtos = new ArrayList<>();

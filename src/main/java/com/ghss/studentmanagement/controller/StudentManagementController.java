@@ -1,6 +1,7 @@
 package com.ghss.studentmanagement.controller;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -14,15 +15,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ghss.studentmanagement.dto.StudentDto;
+import com.ghss.studentmanagement.model.Student;
 import com.ghss.studentmanagement.service.StudentManagementService;
+
+import lombok.AllArgsConstructor;
 
 
 @RestController
 @RequestMapping(path = "/student", produces = MediaType.APPLICATION_JSON_VALUE)
+@AllArgsConstructor
 public class StudentManagementController {
 
 
-    @Autowired
     StudentManagementService studentManagementService;
 
     // @GetMapping("/")
@@ -37,6 +41,11 @@ public class StudentManagementController {
 
     @GetMapping("/lastyear-no-fee-multiple-courses")
     public List<StudentDto> findStudentsWithNoFeesInLastYearAndMultipleCourses(){
+        List<Student> students = studentManagementService.findStudentsWithNoFeesInLastYearAndMultipleCourses();
+        List<StudentDto> studentDtos = new ArrayList<>();
+        for(Student student : students){
+            studentDtos.add(new StudentDto(student.getName(), student.getEnrollmentDate(), null, student.getPendingFee()));
+        }
         return null;
     }
 

@@ -1,6 +1,7 @@
 package com.ghss.studentmanagement.service;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -47,20 +48,38 @@ public class StudentManagementService {
         System.out.println("Loaded " + students.size() + " students.");
         System.out.println("Loaded " + courses.size() + " courses.");
         System.out.println("Loaded " + enrollments.size() + " enrollments.");
-        System.out.println("Enrollments - "+enrollments.toString());
+        System.out.println("Enrollments - " + enrollments.toString());
     }
 
     public StudentDto findNthStudentByEnrollmentDateWithHighestPendingFee(int n, LocalDate date) {
-        List<Student> sortedStudents = students.stream().filter(s -> s.getEnrollmentDate().isEqual(date)).sorted((o1, o2) -> {
-            return o1.getPendingFee() < o2.getPendingFee() ? 1:-1;
-        }).collect(Collectors.toList());
+        List<Student> sortedStudents = students.stream().filter(s -> s.getEnrollmentDate().isEqual(date))
+                .sorted((o1, o2) -> {
+                    return o1.getPendingFee() < o2.getPendingFee() ? 1 : -1;
+                }).collect(Collectors.toList());
         if (n <= 0 || n > sortedStudents.size())
-            throw new IllegalArgumentException("Invalid index : "+n);
+            throw new IllegalArgumentException("Invalid index : " + n);
         return StudentMapper.mapToStudentDto(sortedStudents.get(n - 1), new StudentDto());
     }
 
     public static Optional<Course> findByCourseName(String courseName) {
-        return courses.stream().filter(c->c.getCourseName().equals(courseName)).findFirst();
+        return courses.stream().filter(c -> c.getCourseName().equals(courseName)).findFirst();
+    }
+
+    public List<Student> findStudentsWithNoFeesInLastYearAndMultipleCourses() {
+        LocalDate oneYearAgo = LocalDate.now().minus(1, ChronoUnit.YEARS);
+        List<Student> studentIdsWithMultipleCoursesPrevYear = students.stream().filter(s -> {
+            if (s.getEnrollmentDate().isEqual(oneYearAgo) && s.getEnrollments().size() > 1) {
+                return true;
+            } else {
+                return false;
+            }
+        }).collect(Collectors.toList());
+
+        List<Student> studentIdsWithMultipleCoursesNoFeesPrevYear = studentIdsWithMultipleCoursesPrevYear.stream()
+                .filter(s -> s.getEnrollments().stream().filter(e -> e.getStudent().getPendingFee() > 0).count() == s
+                        .getEnrollments().size())
+                .collect(Collectors.toList());
+        return studentIdsWithMultipleCoursesNoFeesPrevYear;
     }
 
 }
