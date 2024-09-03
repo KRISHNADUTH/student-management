@@ -3,18 +3,12 @@ package com.ghss.studentmanagement.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-
-import com.ghss.studentmanagement.dto.CourseDto;
 import com.ghss.studentmanagement.dto.StudentDto;
 import com.ghss.studentmanagement.mapper.StudentMapper;
-import com.ghss.studentmanagement.model.Course;
-import com.ghss.studentmanagement.model.Enrollment;
 import com.ghss.studentmanagement.model.Student;
 import com.ghss.studentmanagement.repo.CourseRepository;
 import com.ghss.studentmanagement.repo.StudentRepository;
 import com.ghss.studentmanagement.service.IStudentService;
-import com.ghss.studentmanagement.service.StudentManagementService;
 
 @Service
 public class StudentServiceImpl implements IStudentService {
