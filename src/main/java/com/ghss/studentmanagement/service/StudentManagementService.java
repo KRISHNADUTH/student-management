@@ -2,6 +2,7 @@ package com.ghss.studentmanagement.service;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -11,6 +12,7 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ghss.studentmanagement.dto.CourseDto;
 import com.ghss.studentmanagement.dto.StudentDto;
 import com.ghss.studentmanagement.mapper.StudentMapper;
 import com.ghss.studentmanagement.model.Course;
@@ -48,7 +50,6 @@ public class StudentManagementService {
         System.out.println("Loaded " + students.size() + " students.");
         System.out.println("Loaded " + courses.size() + " courses.");
         System.out.println("Loaded " + enrollments.size() + " enrollments.");
-        System.out.println("Enrollments - " + enrollments.toString());
     }
 
     public StudentDto findNthStudentByEnrollmentDateWithHighestPendingFee(int n, LocalDate date) {
@@ -65,21 +66,33 @@ public class StudentManagementService {
         return courses.stream().filter(c -> c.getCourseName().equals(courseName)).findFirst();
     }
 
-    public List<Student> findStudentsWithNoFeesInLastYearAndMultipleCourses() {
+    public List<StudentDto> findStudentsWithNoFeesInLastYearAndMultipleCourses() {
         LocalDate oneYearAgo = LocalDate.now().minus(1, ChronoUnit.YEARS);
-        List<Student> studentIdsWithMultipleCoursesPrevYear = students.stream().filter(s -> {
-            if (s.getEnrollmentDate().isEqual(oneYearAgo) && s.getEnrollments().size() > 1) {
+
+        List<Student> studentIdsWithMultipleCoursesNoFeesPrevYear = students.stream().filter(s -> {
+            if (s.getEnrollmentDate().getYear() == oneYearAgo.getYear() && s.getEnrollments().size() > 1) {
                 return true;
             } else {
                 return false;
             }
-        }).collect(Collectors.toList());
-
-        List<Student> studentIdsWithMultipleCoursesNoFeesPrevYear = studentIdsWithMultipleCoursesPrevYear.stream()
-                .filter(s -> s.getEnrollments().stream().filter(e -> e.getStudent().getPendingFee() > 0).count() == s
-                        .getEnrollments().size())
+        }).filter(s -> s.getEnrollments().stream().filter(e -> e.getAmountPaid() == 0).count() == s.getEnrollments()
+                .size())
                 .collect(Collectors.toList());
-        return studentIdsWithMultipleCoursesNoFeesPrevYear;
+
+        List<StudentDto> studentDtos = new ArrayList<>();
+        for (Student student : studentIdsWithMultipleCoursesNoFeesPrevYear) {
+            List<CourseDto> courseDtos = new ArrayList<>();
+            for (Enrollment enrollment : student.getEnrollments()) {
+                courseDtos.add(
+                        new CourseDto(enrollment.getCourse().getCourseName(),
+                                enrollment.getCourse().getCourseFee() - enrollment.getAmountPaid()));
+            }
+            studentDtos
+                    .add(new StudentDto(student.getName(), student.getEnrollmentDate(), courseDtos,
+                            student.getPendingFee()));
+        }
+
+        return studentDtos;
     }
 
 }

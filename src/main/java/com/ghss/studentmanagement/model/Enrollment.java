@@ -28,9 +28,12 @@ public class Enrollment {
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
 
-    public Enrollment(LocalDate enrollmentDate) {
+    public Enrollment(LocalDate enrollmentDate, double amountPaid) {
         this.enrollmentDate = enrollmentDate;
+        this.amountPaid = amountPaid;
     }
+
+    private double amountPaid;
 
     private LocalDate enrollmentDate;
 

@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CourseDto {
     private String courseName;
-    private double courseFee;  // This variable records whether student paid fees while enrolling course, value will be zero when no payment is made.
-}
+    private double courseFee;  // This variable records whether student paid fees while enrolling course(POSTing student), value will be zero when no payment is made.
+}                              // While POSTing new student it recods fees of a course.

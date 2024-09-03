@@ -25,7 +25,7 @@ public class StudentMapper {
             int totalFees = 0;
             int paidFees = 0;
             for (CourseDto courseDto : courseDtos) {
-                Enrollment newEnrollment = new Enrollment(student.getEnrollmentDate());
+                Enrollment newEnrollment = new Enrollment(student.getEnrollmentDate(),courseDto.getCourseFee());
                 Course course = StudentManagementService.findByCourseName(courseDto.getCourseName().toLowerCase()).get();
                 totalFees+=course.getCourseFee();
                 paidFees+=courseDto.getCourseFee();
