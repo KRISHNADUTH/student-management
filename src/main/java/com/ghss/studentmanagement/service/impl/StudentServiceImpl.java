@@ -14,6 +14,7 @@ import com.ghss.studentmanagement.model.Student;
 import com.ghss.studentmanagement.repo.CourseRepository;
 import com.ghss.studentmanagement.repo.StudentRepository;
 import com.ghss.studentmanagement.service.IStudentService;
+import com.ghss.studentmanagement.service.StudentManagementService;
 
 @Service
 public class StudentServiceImpl implements IStudentService {
@@ -28,16 +29,6 @@ public class StudentServiceImpl implements IStudentService {
         if (studentDto != null) {
             
             Student student = StudentMapper.mapToStudent(studentDto, new Student());
-            List<CourseDto> courseDtos = studentDto.getCourses();
-            int pendingFee = 0;
-            for (CourseDto courseDto : courseDtos) {
-                Enrollment newEnrollment = new Enrollment(student.getEnrollmentDate());
-                Course course = courseRepository.findByCourseName(courseDto.getCourseName().toLowerCase()).get();
-                pendingFee+=course.getCourseFee();
-                course.addEnrollment(newEnrollment);
-                student.addEnrollment(newEnrollment);
-            }
-            student.setPendingFee(pendingFee);
             System.out.println(student);
             studentRepository.save(student);
         } else {

@@ -18,7 +18,7 @@ public class Course {
     private Long id;
     private String courseName;
     private double courseFee;
-    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Enrollment> enrollments = new ArrayList<>();
     
     public void addEnrollment(Enrollment enrollment){

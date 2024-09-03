@@ -2,6 +2,7 @@ package com.ghss.studentmanagement.service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -33,9 +34,9 @@ public class StudentManagementService {
     // @Autowired
     // private FeePaymentRepository feePaymentRepository;
 
-    private List<Student> students;
-    private List<Course> courses;
-    private List<Enrollment> enrollments;
+    private static List<Student> students;
+    private static List<Course> courses;
+    private static List<Enrollment> enrollments;
 
     @PostConstruct
     public void loadData() {
@@ -50,14 +51,16 @@ public class StudentManagementService {
     }
 
     public StudentDto findNthStudentByEnrollmentDateWithHighestPendingFee(int n, LocalDate date) {
-        System.out.println("Calling loadData().............................................................................................................");
-        loadData();
         List<Student> sortedStudents = students.stream().filter(s -> s.getEnrollmentDate().isEqual(date)).sorted((o1, o2) -> {
             return o1.getPendingFee() < o2.getPendingFee() ? 1:-1;
         }).collect(Collectors.toList());
         if (n <= 0 || n > sortedStudents.size())
             throw new IllegalArgumentException("Invalid index : "+n);
         return StudentMapper.mapToStudentDto(sortedStudents.get(n - 1), new StudentDto());
+    }
+
+    public static Optional<Course> findByCourseName(String courseName) {
+        return courses.stream().filter(c->c.getCourseName().equals(courseName)).findFirst();
     }
 
 }

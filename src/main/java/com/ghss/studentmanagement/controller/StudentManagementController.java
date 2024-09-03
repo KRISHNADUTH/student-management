@@ -25,14 +25,13 @@ public class StudentManagementController {
     @Autowired
     StudentManagementService studentManagementService;
 
-    @GetMapping("/")
-    public void loadData(){
-        studentManagementService.loadData();
-    }
+    // @GetMapping("/")
+    // public void loadData(){
+    //     studentManagementService.loadData();
+    // }
 
     @GetMapping("/{n}/nth-highest-pending-fee")
     public StudentDto findNthStudentByEnrollmentDateWithHighestPendingFee(@PathVariable int n,@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date){
-        studentManagementService.loadData();
         return studentManagementService.findNthStudentByEnrollmentDateWithHighestPendingFee(n, date);
     }
 

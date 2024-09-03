@@ -23,7 +23,7 @@ public class Student {
 
     private double pendingFee;
 
-    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Enrollment> enrollments = new ArrayList<>();
 
     public void addEnrollment(Enrollment enrollment){
