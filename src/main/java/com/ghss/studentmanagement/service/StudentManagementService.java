@@ -12,7 +12,6 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.ghss.studentmanagement.dto.CourseDto;
 import com.ghss.studentmanagement.dto.StudentDto;
 import com.ghss.studentmanagement.mapper.StudentMapper;
 import com.ghss.studentmanagement.model.Course;
@@ -81,15 +80,7 @@ public class StudentManagementService {
 
         List<StudentDto> studentDtos = new ArrayList<>();
         for (Student student : studentIdsWithMultipleCoursesNoFeesPrevYear) {
-            List<CourseDto> courseDtos = new ArrayList<>();
-            for (Enrollment enrollment : student.getEnrollments()) {
-                courseDtos.add(
-                        new CourseDto(enrollment.getCourse().getCourseName(),
-                                enrollment.getCourse().getCourseFee() - enrollment.getAmountPaid()));
-            }
-            studentDtos
-                    .add(new StudentDto(student.getName(), student.getEnrollmentDate(), courseDtos,
-                            student.getPendingFee()));
+            studentDtos.add(StudentMapper.mapToStudentDto(student, new StudentDto()));
         }
 
         return studentDtos;

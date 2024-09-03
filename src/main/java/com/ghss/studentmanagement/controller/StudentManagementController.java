@@ -1,7 +1,6 @@
 package com.ghss.studentmanagement.controller;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -13,10 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ghss.studentmanagement.dto.CourseDto;
 import com.ghss.studentmanagement.dto.StudentDto;
-import com.ghss.studentmanagement.model.Enrollment;
-import com.ghss.studentmanagement.model.Student;
 import com.ghss.studentmanagement.service.StudentManagementService;
 
 import lombok.AllArgsConstructor;
