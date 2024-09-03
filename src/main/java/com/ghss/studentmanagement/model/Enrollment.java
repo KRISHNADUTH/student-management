@@ -4,12 +4,16 @@ import java.time.LocalDate;
 
 import javax.persistence.*;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Enrollment {
 
     @Id
@@ -24,6 +28,15 @@ public class Enrollment {
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
 
+    public Enrollment(LocalDate enrollmentDate) {
+        this.enrollmentDate = enrollmentDate;
+    }
+
     private LocalDate enrollmentDate;
+
+    // @Override
+    // public String toString() {
+    //     return "Enrollment [id=" + id + ", student=" + student + ", enrollmentDate=" + enrollmentDate + "]";
+    // }
 
 }

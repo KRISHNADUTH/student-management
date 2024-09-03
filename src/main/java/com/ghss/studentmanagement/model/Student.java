@@ -28,7 +28,14 @@ public class Student {
 
     public void addEnrollment(Enrollment enrollment){
         enrollment.setStudent(this);
-        enrollment.setEnrollmentDate(LocalDate.now());
+        enrollment.setEnrollmentDate(this.getEnrollmentDate());
         enrollments.add(enrollment);
     }
+
+    @Override
+    public String toString() {
+        return "Student [id=" + id + ", name=" + name + ", enrollmentDate=" + enrollmentDate + ", pendingFee="
+                + pendingFee + "]";
+    }
+    
 }

@@ -5,14 +5,13 @@ import javax.persistence.*;
 
 import lombok.Getter;
 import lombok.Setter;
-
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Getter
 @Setter
+// @ToString
 public class Course {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +23,13 @@ public class Course {
     
     public void addEnrollment(Enrollment enrollment){
         enrollment.setCourse(this);
-        enrollment.setEnrollmentDate(LocalDate.now());
+        // enrollment.setEnrollmentDate(LocalDate.now());
         enrollments.add(enrollment);
     }
+
+    @Override
+    public String toString() {
+        return "Course [id=" + id + ", courseName=" + courseName + ", courseFee=" + courseFee + "]";
+    }
+    
 }

@@ -1,5 +1,7 @@
 package com.ghss.studentmanagement.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,9 +25,16 @@ public class StudentController {
 
     @PostMapping("/add-student")
     public ResponseEntity<ResponseDto> addStudent(@RequestBody StudentDto studentDto) {
-        System.out.println("55555555555555555555555555555555555555555555555555555555555555555555555"+studentDto);
+        
         studentServiceImpl.addStudent(studentDto);
         System.out.println(studentDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDto("201", "Student added"));
+    }
+
+    @PostMapping("/add-students")
+    public ResponseEntity<ResponseDto> addStudents(@RequestBody List<StudentDto> studentDtos) {
+        for(StudentDto studentDto:studentDtos)
+            studentServiceImpl.addStudent(studentDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDto("201", "Students added"));
     }
 }

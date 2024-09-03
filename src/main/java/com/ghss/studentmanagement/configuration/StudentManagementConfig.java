@@ -19,6 +19,6 @@ public class StudentManagementConfig {
         return new Docket(DocumentationType.SWAGGER_2).apiInfo(getApiInfo()).select().apis(RequestHandlerSelectors.any()).paths(PathSelectors.any()).build();
     }
     private ApiInfo getApiInfo(){
-        return new ApiInfoBuilder().title("student demo").description("student info").version("1.0").build();
+        return new ApiInfoBuilder().title("student management").description("student info").version("1.0").build();
     }
 }

@@ -5,12 +5,13 @@ import com.ghss.studentmanagement.model.Student;
 public class StudentMapper {
 
     // @Autowired
-    // CourseRepository courseRepository;
+    // CourseRepository courseRepository;  
 
-    public static Student mapToSrudent(StudentDto studentDto, Student student) {
-        // student.setEnrollmentDate(studentDto.getEnrollmentDate());
+    public static Student mapToStudent(StudentDto studentDto, Student student) {
+        student.setEnrollmentDate(studentDto.getEnrollmentDate());
         student.setName(studentDto.getName());
-        // student.setPendingFee(studentDto.getPendingFee());
+        student.setPendingFee(studentDto.getPendingFee());
+        
         return student;
     }
 
@@ -18,6 +19,7 @@ public class StudentMapper {
         studentDto.setEnrollmentDate(student.getEnrollmentDate());
         studentDto.setName(student.getName());
         studentDto.setPendingFee(student.getPendingFee());
+        
         return studentDto;
     }
 

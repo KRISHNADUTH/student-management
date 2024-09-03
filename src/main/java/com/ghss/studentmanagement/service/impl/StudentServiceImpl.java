@@ -3,7 +3,6 @@ package com.ghss.studentmanagement.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.*;
 
 import com.ghss.studentmanagement.dto.CourseDto;
@@ -27,18 +26,19 @@ public class StudentServiceImpl implements IStudentService {
     @Override
     public void addStudent(StudentDto studentDto) {
         if (studentDto != null) {
-            Student student = StudentMapper.mapToSrudent(studentDto, new Student());
+            
+            Student student = StudentMapper.mapToStudent(studentDto, new Student());
             List<CourseDto> courseDtos = studentDto.getCourses();
             int pendingFee = 0;
             for (CourseDto courseDto : courseDtos) {
-                Enrollment newEnrollment = new Enrollment();
-                Course course = courseRepository.findByCourseName(courseDto.getCourseName()).get();
+                Enrollment newEnrollment = new Enrollment(student.getEnrollmentDate());
+                Course course = courseRepository.findByCourseName(courseDto.getCourseName().toLowerCase()).get();
                 pendingFee+=course.getCourseFee();
                 course.addEnrollment(newEnrollment);
                 student.addEnrollment(newEnrollment);
             }
-            student.setEnrollmentDate(LocalDate.now());
             student.setPendingFee(pendingFee);
+            System.out.println(student);
             studentRepository.save(student);
         } else {
             throw new NullPointerException("Please provide valid entries");

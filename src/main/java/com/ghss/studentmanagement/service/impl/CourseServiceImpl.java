@@ -26,7 +26,7 @@ public class CourseServiceImpl implements ICourseService{
     @Override
     public void addCourse(CourseDto courseDto) {
         if(courseDto != null){
-            Optional<Course> optionalCourse = courseRepository.findByCourseName(courseDto.getCourseName());
+            Optional<Course> optionalCourse = courseRepository.findByCourseName(courseDto.getCourseName().toLowerCase());
             if(optionalCourse.isPresent()){
                 throw new ResourseAlreadyExistsException("Course","name",courseDto.getCourseName());
             } else {
