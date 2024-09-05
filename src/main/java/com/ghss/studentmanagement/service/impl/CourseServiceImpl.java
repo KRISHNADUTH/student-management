@@ -1,27 +1,34 @@
 package com.ghss.studentmanagement.service.impl;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.ghss.studentmanagement.controller.StudentManagementController;
 import com.ghss.studentmanagement.dto.CourseDto;
 import com.ghss.studentmanagement.exception.ResourseAlreadyExistsException;
 import com.ghss.studentmanagement.mapper.CourseMapper;
 import com.ghss.studentmanagement.model.Course;
 import com.ghss.studentmanagement.repo.CourseRepository;
 import com.ghss.studentmanagement.service.ICourseService;
+import com.ghss.studentmanagement.service.StudentManagementService;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 @Service
-@AllArgsConstructor
-@NoArgsConstructor
 public class CourseServiceImpl implements ICourseService{
 
     @Autowired
     CourseRepository courseRepository;
+
+    @Autowired
+    StudentManagementService studentManagementService;
 
     @Override
     public void addCourse(CourseDto courseDto) {
@@ -36,6 +43,15 @@ public class CourseServiceImpl implements ICourseService{
         } else {
             throw new NullPointerException("Please provide valid entries");
         }
+    }
+
+    public ResponseEntity<List<CourseDto>> getAllCourses() {
+        List<Course> courses = studentManagementService.getAllCourses();
+        List<CourseDto> courseDtos = new ArrayList<>();
+        for(Course course:courses){
+            courseDtos.add(CourseMapper.mapToCourseDto(course, new CourseDto()));
+        }
+        return new ResponseEntity<List<CourseDto>>(courseDtos, HttpStatus.OK);
     }
     
 }

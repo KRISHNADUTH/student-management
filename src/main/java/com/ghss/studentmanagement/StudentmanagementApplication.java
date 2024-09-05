@@ -18,5 +18,4 @@ public class StudentmanagementApplication {
 			System.out.println("Hello world");
 		};
 	}
-
 }

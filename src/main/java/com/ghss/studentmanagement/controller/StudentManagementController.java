@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,7 +31,7 @@ public class StudentManagementController {
     // }
 
     @GetMapping("/{n}/nth-highest-pending-fee")
-    public StudentDto findNthStudentByEnrollmentDateWithHighestPendingFee(@PathVariable int n,
+    public ResponseEntity<Object> findNthStudentByEnrollmentDateWithHighestPendingFee(@PathVariable int n,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         return studentManagementService.findNthStudentByEnrollmentDateWithHighestPendingFee(n, date);
     }
@@ -39,23 +40,23 @@ public class StudentManagementController {
     // any fees in prev year, with the details of fees of those courses
     @GetMapping("/lastyear-no-fee-multiple-courses")
     public List<StudentDto> findStudentsWithNoFeesInLastYearAndMultipleCourses() {
-        List<StudentDto> studentDtos = studentManagementService.findStudentsWithNoFeesInLastYearAndMultipleCourses();
-        return studentDtos;
+        return findStudentsWithNoFeesInLastYearAndMultipleCourses();
     }
 
     @GetMapping("/avg-fees")
     public Map<LocalDate, Double> getAverageFeeCollectedPerStudentPerBatch() {
-        return null;
+        return studentManagementService.getAverageFeeCollectedPerStudentPerBatch();
     }
 
     @GetMapping("/top-5-longest-delinquent-payment")
     public List<StudentDto> findTop5StudentsWithLongestDelinquentPaymentHistory() {
-        return null;
+        return studentManagementService.findTop5StudentsWithLongestDelinquentPaymentHistory();
     }
 
     @GetMapping("/enrolled-in-all-courses-not-paid")
     public List<StudentDto> findStudentsEnrolledInAllCoursesButNotPaidFees() {
-        return null;
+        return studentManagementService.findStudentsEnrolledInAllCoursesButNotPaidFees();
     }
+
 
 }

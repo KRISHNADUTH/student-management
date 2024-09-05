@@ -2,10 +2,13 @@ package com.ghss.studentmanagement.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +21,7 @@ import com.ghss.studentmanagement.service.impl.StudentServiceImpl;
 
 @RestController
 @RequestMapping(path = "/students", produces = MediaType.APPLICATION_JSON_VALUE)
+@Validated
 public class StudentController {
 
     @Autowired
@@ -27,7 +31,7 @@ public class StudentController {
     StudentManagementService studentManagementService;
 
     @PostMapping("/add-student")
-    public ResponseEntity<ResponseDto> addStudent(@RequestBody StudentDto studentDto) {
+    public ResponseEntity<ResponseDto> addStudent(@Valid @RequestBody StudentDto studentDto) {
 
         studentServiceImpl.addStudent(studentDto);
         System.out.println(studentDto);
@@ -35,7 +39,7 @@ public class StudentController {
     }
 
     @PostMapping("/add-students")
-    public ResponseEntity<ResponseDto> addStudents(@RequestBody List<StudentDto> studentDtos) {
+    public ResponseEntity<ResponseDto> addStudents(@Valid @RequestBody List<StudentDto> studentDtos) {
         for (StudentDto studentDto : studentDtos)
             studentServiceImpl.addStudent(studentDto);
         studentManagementService.loadData();

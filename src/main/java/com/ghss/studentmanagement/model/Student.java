@@ -21,6 +21,8 @@ public class Student {
 
     private LocalDate enrollmentDate;
 
+    private double totalFeePaid;
+
     private double pendingFee;
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, fetch = FetchType.EAGER)

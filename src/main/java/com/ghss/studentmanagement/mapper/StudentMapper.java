@@ -32,6 +32,7 @@ public class StudentMapper {
                 course.addEnrollment(newEnrollment);
                 student.addEnrollment(newEnrollment);
             }
+            student.setTotalFeePaid(paidFees);
             pendingFee = totalFees-paidFees;
             student.setPendingFee(pendingFee);
         
