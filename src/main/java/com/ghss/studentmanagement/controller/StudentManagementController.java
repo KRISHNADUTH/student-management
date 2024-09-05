@@ -40,7 +40,7 @@ public class StudentManagementController {
     // any fees in prev year, with the details of fees of those courses
     @GetMapping("/lastyear-no-fee-multiple-courses")
     public List<StudentDto> findStudentsWithNoFeesInLastYearAndMultipleCourses() {
-        return findStudentsWithNoFeesInLastYearAndMultipleCourses();
+        return studentManagementService.findStudentsWithNoFeesInLastYearAndMultipleCourses();
     }
 
     @GetMapping("/avg-fees")

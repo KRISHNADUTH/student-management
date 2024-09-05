@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.ghss.studentmanagement.controller.StudentManagementController;
 import com.ghss.studentmanagement.dto.CourseDto;
 import com.ghss.studentmanagement.exception.ResourseAlreadyExistsException;
 import com.ghss.studentmanagement.mapper.CourseMapper;
@@ -17,9 +16,6 @@ import com.ghss.studentmanagement.model.Course;
 import com.ghss.studentmanagement.repo.CourseRepository;
 import com.ghss.studentmanagement.service.ICourseService;
 import com.ghss.studentmanagement.service.StudentManagementService;
-
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 
 @Service
 public class CourseServiceImpl implements ICourseService{
