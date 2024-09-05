@@ -47,7 +47,10 @@ public class CourseServiceImpl implements ICourseService{
         for(Course course:courses){
             courseDtos.add(CourseMapper.mapToCourseDto(course, new CourseDto()));
         }
-        return new ResponseEntity<List<CourseDto>>(courseDtos, HttpStatus.OK);
+        if(!courseDtos.isEmpty())
+            return new ResponseEntity<List<CourseDto>>(courseDtos, HttpStatus.OK);
+        else
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
     
 }
