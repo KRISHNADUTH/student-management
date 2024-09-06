@@ -29,7 +29,8 @@ public class StudentServiceImpl implements IStudentService {
             if (studentManagementService.existByUserId(studentDto.getUserId()).isPresent()) {
                 throw new ResourseAlreadyExistsException("Student", "user id", studentDto.getUserId());
             }
-            Student student = StudentMapper.mapToStudent(studentDto, new Student());
+            Student student = StudentMapper.mapToStudent(studentDto, new Student(),
+                    studentManagementService.getAllCourses());
             studentRepository.save(student);
             studentManagementService.loadData();
         } else {

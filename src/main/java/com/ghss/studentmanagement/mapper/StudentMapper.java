@@ -3,28 +3,34 @@ import java.util.*;
 
 import com.ghss.studentmanagement.dto.CourseDto;
 import com.ghss.studentmanagement.dto.StudentDto;
+import com.ghss.studentmanagement.exception.ResourceNotFoundException;
 import com.ghss.studentmanagement.model.Course;
 import com.ghss.studentmanagement.model.Enrollment;
 import com.ghss.studentmanagement.model.Student;
 import com.ghss.studentmanagement.service.StudentManagementService;
 
 public class StudentMapper {
-    public static Student mapToStudent(StudentDto studentDto, Student student) {
+    public static Student mapToStudent(StudentDto studentDto, Student student, List<Course> availableCourses) {
         student.setEnrollmentDate(studentDto.getEnrollmentDate());
         student.setName(studentDto.getName());
         student.setUserId(studentDto.getUserId());
         List<CourseDto> courseDtos = studentDto.getCourses();
-            int pendingFee = 0;
-            int totalFees = 0;
-            int paidFees = 0;
-            for (CourseDto courseDto : courseDtos) {
-                Enrollment newEnrollment = new Enrollment(student.getEnrollmentDate(),courseDto.getCourseFee());
-                Course course = StudentManagementService.findByCourseName(courseDto.getCourseName().toLowerCase()).get();
-                totalFees+=course.getCourseFee();
-                paidFees+=courseDto.getCourseFee();
-                course.addEnrollment(newEnrollment);
-                student.addEnrollment(newEnrollment);
+        int pendingFee = 0;
+        int totalFees = 0;
+        int paidFees = 0;
+        for (CourseDto courseDto : courseDtos) {
+            String courseName = courseDto.getCourseName();
+            Optional<Course> optionalCourse = availableCourses.stream().filter(c ->c.getCourseName().equals(courseName.toLowerCase())).findFirst();
+            if (!optionalCourse.isPresent()) {
+                throw new ResourceNotFoundException("Course", "course name", courseName);
             }
+            Course course = optionalCourse.get();
+            Enrollment newEnrollment = new Enrollment(student.getEnrollmentDate(),courseDto.getCourseFee());
+            totalFees+=course.getCourseFee();
+            paidFees+=courseDto.getCourseFee();
+            course.addEnrollment(newEnrollment);
+            student.addEnrollment(newEnrollment);
+        }
         student.setTotalFeePaid(paidFees);
         pendingFee = totalFees-paidFees;
         student.setPendingFee(pendingFee);
