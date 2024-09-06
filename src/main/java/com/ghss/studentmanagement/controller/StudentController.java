@@ -34,7 +34,6 @@ public class StudentController {
     public ResponseEntity<ResponseDto> addStudent(@Valid @RequestBody StudentDto studentDto) {
 
         studentServiceImpl.addStudent(studentDto);
-        System.out.println(studentDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDto("201", "Student added"));
     }
 

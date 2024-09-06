@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.json.JSONObject;
 import org.junit.jupiter.api.AfterEach;
@@ -23,6 +24,7 @@ import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import com.ghss.studentmanagement.dto.CourseDto;
 import com.ghss.studentmanagement.model.Course;
@@ -37,6 +39,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -46,9 +49,8 @@ class StudentmanagementApplicationTests {
 	@Autowired
 	private MockMvc mvc;
 
-
-    @MockBean
-    private StudentManagementService studentManagementService;
+	@Autowired
+	private StudentManagementService studentManagementService;
 
 	@Test
 	void contextLoads() {
@@ -87,18 +89,34 @@ class StudentmanagementApplicationTests {
 	public void testAddStudent() throws Exception {
 		List<CourseDto> courseDtos = Arrays.asList(new CourseDto("python", 2000), new CourseDto("java", 6000),
 				new CourseDto("go", 4000));
-		when(studentManagementService.findByCourseName("python")).thenReturn(Optional.of(new Course(1L, "python", 2000, null)));
-		mvc.perform(post("/students/add-student").contentType(MediaType.APPLICATION_JSON_VALUE)
-				.content(getStudentDetails("Krishna", LocalDate.of(2023, 12, 11), courseDtos, 010).toString()))
-				.andExpect(status().isCreated());
+
+		MvcResult result = mvc.perform(post("/students/add-student").contentType(MediaType.APPLICATION_JSON_VALUE)
+				.content(getStudentDetails("Krishna", "krishna@123", LocalDate.of(2023, 12, 11), courseDtos, 010)
+						.toString()))
+				.andReturn();
+		// Log the response content
+		String responseContent = result.getResponse().getContentAsString();
+		System.out.println("Response Content: " + responseContent);
+
+		// Now you can add your assertions here
+		// Verify the structure of the response
+		// Adjust these to match your actual response keys
+		assertThat(responseContent).contains("Student added");
 	}
 
-	public JSONObject getStudentDetails(String name, LocalDate enrollmentDate, List<CourseDto> courses,
+	public JSONObject getStudentDetails(String name, String userId, LocalDate enrollmentDate, List<CourseDto> courses,
 			double pendingFee) {
 		Map<String, Object> map = new HashMap<>();
 		map.put("name", name);
+		map.put("userId", userId);
 		map.put("enrollmentDate", enrollmentDate);
-		map.put("courses", courses);
+		map.put("courses", courses.stream()
+				.map(course -> {
+					Map<String, Object> courseMap = new HashMap<>();
+					courseMap.put("courseName", course.getCourseName());
+					courseMap.put("courseFee", course.getCourseFee());
+					return courseMap;
+				}).collect(Collectors.toList()));
 		map.put("pendingFee", pendingFee);
 		return new JSONObject(map);
 	}

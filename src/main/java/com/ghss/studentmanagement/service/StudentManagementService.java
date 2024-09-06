@@ -148,6 +148,10 @@ public class StudentManagementService {
         return courses;
     }
 
+    public Optional<Student> existByUserId(String userId) {
+        return students.stream().filter(s->s.getUserId().equals(userId)).findFirst();
+    }
+
 
     /*
      * public Map<LocalDate, Double> getAverageFeeCollectedPerCoursePerBatch() {

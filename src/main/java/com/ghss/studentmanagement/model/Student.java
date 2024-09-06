@@ -17,7 +17,6 @@ public class Student {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
     private String userId;
 
     private String name;
@@ -39,8 +38,8 @@ public class Student {
 
     @Override
     public String toString() {
-        return "Student [id=" + id + ", name=" + name + ", enrollmentDate=" + enrollmentDate + ", pendingFee="
-                + pendingFee + "]";
+        return "Student [id=" + id + ", userId=" + userId + ", name=" + name + ", enrollmentDate=" + enrollmentDate
+                + ", totalFeePaid=" + totalFeePaid + ", pendingFee=" + pendingFee + "]";
     }
     
 }

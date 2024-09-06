@@ -3,6 +3,7 @@ package com.ghss.studentmanagement.dto;
 import java.time.LocalDate;
 import java.util.List;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 
@@ -18,6 +19,7 @@ public class StudentDto {
     @Size(min = 3, max = 30, message = "Name should have characters between 3-30.")
     private String name;
 
+    @NotEmpty(message = "User Id is mandatory")
     private String userId;
 
     private LocalDate enrollmentDate;

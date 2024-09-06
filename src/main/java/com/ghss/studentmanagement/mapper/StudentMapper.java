@@ -36,13 +36,13 @@ public class StudentMapper {
         student.setTotalFeePaid(paidFees);
         pendingFee = totalFees-paidFees;
         student.setPendingFee(pendingFee);
-        
         return student;
     }
 
     public static StudentDto  mapToStudentDto(Student student, StudentDto studentDto){
         studentDto.setEnrollmentDate(student.getEnrollmentDate());
         studentDto.setName(student.getName());
+        studentDto.setUserId(student.getUserId());
         List<CourseDto> courseDtos = new ArrayList<>();
         for(Enrollment enrollment:student.getEnrollments()){
             courseDtos.add(new CourseDto(enrollment.getCourse().getCourseName(), enrollment.getCourse().getCourseFee()));

@@ -4,11 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ghss.studentmanagement.dto.StudentDto;
+import com.ghss.studentmanagement.exception.ResourseAlreadyExistsException;
 import com.ghss.studentmanagement.mapper.StudentMapper;
 import com.ghss.studentmanagement.model.Student;
 import com.ghss.studentmanagement.repo.CourseRepository;
 import com.ghss.studentmanagement.repo.StudentRepository;
 import com.ghss.studentmanagement.service.IStudentService;
+import com.ghss.studentmanagement.service.StudentManagementService;
 
 @Service
 public class StudentServiceImpl implements IStudentService {
@@ -18,13 +20,18 @@ public class StudentServiceImpl implements IStudentService {
     @Autowired
     CourseRepository courseRepository;
 
+    @Autowired
+    StudentManagementService studentManagementService;
+
     @Override
     public void addStudent(StudentDto studentDto) {
         if (studentDto != null) {
-            
+            if (studentManagementService.existByUserId(studentDto.getUserId()).isPresent()) {
+                throw new ResourseAlreadyExistsException("Student", "user id", studentDto.getUserId());
+            }
             Student student = StudentMapper.mapToStudent(studentDto, new Student());
-            System.out.println(student);
             studentRepository.save(student);
+            studentManagementService.loadData();
         } else {
             throw new NullPointerException("Please provide valid entries");
         }
