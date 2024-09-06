@@ -2,6 +2,7 @@ package com.ghss.studentmanagement;
 
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -35,6 +37,8 @@ import com.ghss.studentmanagement.service.impl.CourseServiceImpl;
 import com.ghss.studentmanagement.service.impl.StudentServiceImpl;
 
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -49,22 +53,63 @@ class StudentmanagementApplicationTests {
 	@Autowired
 	private MockMvc mvc;
 
-	@Autowired
+	@MockBean
 	private StudentManagementService studentManagementService;
+
+	@Autowired
+	CourseServiceImpl courseServiceImpl;
 
 	@Test
 	void contextLoads() {
 	}
 
 	@Test
+	@Order(0)
+	public void testGetAllCourses_NoCourseFound() throws Exception {
+		// Mock the behavior of studentManagementService to return an empty list for
+		// getAllCourses()
+		when(studentManagementService.getAllCourses()).thenReturn(Collections.emptyList());
+
+		// Perform the GET request on the /courses/get-all endpoint
+		MvcResult result = mvc.perform(get("/courses/get-all")
+				.contentType(MediaType.APPLICATION_JSON_VALUE))
+				.andExpect(status().isNotFound())
+				.andReturn();
+
+		// Verify the response contains the appropriate status and message
+		String responseContent = result.getResponse().getContentAsString();
+		System.out.println("Response Content: " + responseContent);
+
+		// Expected ResponseDto structure
+		String expectedResponse = "{\"statusCode\":\"404\",\"statusMsg\":\"Requested resource not found\"}"; // Update based on actual
+																								// message in
+																								// StudentManagementConstants
+
+		// Assert the response
+		assertThat(responseContent).isEqualToIgnoringWhitespace(expectedResponse);
+
+		// Verify that the getAllCourses() method was called on the service
+		verify(studentManagementService,times(1)).getAllCourses();
+	}
+
+	@Test
 	@Order(1)
-	public void testGetAllCourses() throws Exception {
-		mvc.perform(get("/courses/get-all").contentType(MediaType.APPLICATION_JSON_VALUE)).andExpect(status().isOk());
+	public void testGetAllCourses_ReturnCourses() throws Exception {
+		// Mock the service to return a non-empty list of courses
+		List<Course> mockCourses = Arrays.asList(
+				new Course(1L, "java", 4000, null),
+				new Course(2L, "Python", 3500, null)
+		);
+
+		when(studentManagementService.getAllCourses()).thenReturn(mockCourses);
+
+		mvc.perform(get("/courses/get-all").contentType(MediaType.APPLICATION_JSON_VALUE))
+				.andExpect(status().isOk()); // Expect 200 OK status
 	}
 
 	@Test
 	@Order(2)
-	public void testAddCourse() throws Exception {
+	public void testAddCourse_addNewCourse_and_addExistingCourse() throws Exception {
 		mvc.perform(post("/courses/add-course").contentType(MediaType.APPLICATION_JSON_VALUE)
 				.content(getCourseDetails("flutter", 1550).toString())).andExpect(status().isOk());
 		mvc.perform(post("/courses/add-course").contentType(MediaType.APPLICATION_JSON_VALUE)

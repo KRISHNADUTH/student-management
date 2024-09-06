@@ -2,6 +2,7 @@ package com.ghss.studentmanagement.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.ghss.studentmanagement.constatnts.StudentManagementConstants;
 import com.ghss.studentmanagement.dto.CourseDto;
+import com.ghss.studentmanagement.dto.ResponseDto;
 import com.ghss.studentmanagement.exception.ResourseAlreadyExistsException;
 import com.ghss.studentmanagement.mapper.CourseMapper;
 import com.ghss.studentmanagement.model.Course;
@@ -18,7 +21,7 @@ import com.ghss.studentmanagement.service.ICourseService;
 import com.ghss.studentmanagement.service.StudentManagementService;
 
 @Service
-public class CourseServiceImpl implements ICourseService{
+public class CourseServiceImpl implements ICourseService {
 
     @Autowired
     CourseRepository courseRepository;
@@ -28,29 +31,33 @@ public class CourseServiceImpl implements ICourseService{
 
     @Override
     public void addCourse(CourseDto courseDto) {
-        if(courseDto != null){
-            Optional<Course> optionalCourse = StudentManagementService.findByCourseName(courseDto.getCourseName().toLowerCase());
-            if(optionalCourse.isPresent()){
-                throw new ResourseAlreadyExistsException("Course","name",courseDto.getCourseName());
+        if (courseDto != null) {
+            Optional<Course> optionalCourse = StudentManagementService
+                    .findByCourseName(courseDto.getCourseName().toLowerCase());
+            if (optionalCourse.isPresent()) {
+                throw new ResourseAlreadyExistsException("Course", "name", courseDto.getCourseName());
             } else {
                 Course course = CourseMapper.mapToCourse(courseDto, new Course());
                 courseRepository.save(course);
+                studentManagementService.loadData();
             }
         } else {
             throw new NullPointerException("Please provide valid entries");
         }
     }
 
-    public ResponseEntity<List<CourseDto>> getAllCourses() {
+    public ResponseEntity<Object> getAllCourses() {
         List<Course> courses = studentManagementService.getAllCourses();
-        List<CourseDto> courseDtos = new ArrayList<>();
-        for(Course course:courses){
-            courseDtos.add(CourseMapper.mapToCourseDto(course, new CourseDto()));
+        if (Objects.isNull(courses)||!courses.isEmpty()){
+            List<CourseDto> courseDtos = new ArrayList<>();
+            for (Course course : courses) {
+                courseDtos.add(CourseMapper.mapToCourseDto(course, new CourseDto()));
+            }
+            return new ResponseEntity<>(courseDtos, HttpStatus.OK);
         }
-        if(!courseDtos.isEmpty())
-            return new ResponseEntity<List<CourseDto>>(courseDtos, HttpStatus.OK);
         else
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(
+                    new ResponseDto(StudentManagementConstants.STATUS_404, StudentManagementConstants.MESSAGE_404),HttpStatus.NOT_FOUND);
     }
-    
+
 }
