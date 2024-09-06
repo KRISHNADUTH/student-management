@@ -18,6 +18,8 @@ public class StudentDto {
     @Size(min = 3, max = 30, message = "Name should have characters between 3-30.")
     private String name;
 
+    private String userId;
+
     private LocalDate enrollmentDate;
 
     private List<CourseDto> courses;
