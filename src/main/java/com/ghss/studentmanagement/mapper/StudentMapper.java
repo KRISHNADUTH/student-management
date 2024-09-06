@@ -1,22 +1,14 @@
 package com.ghss.studentmanagement.mapper;
 import java.util.*;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.ghss.studentmanagement.dto.CourseDto;
 import com.ghss.studentmanagement.dto.StudentDto;
 import com.ghss.studentmanagement.model.Course;
 import com.ghss.studentmanagement.model.Enrollment;
 import com.ghss.studentmanagement.model.Student;
-import com.ghss.studentmanagement.repo.CourseRepository;
 import com.ghss.studentmanagement.service.StudentManagementService;
+
 public class StudentMapper {
-
-    @Autowired
-    CourseRepository courseRepository;  
-
-    
-
     public static Student mapToStudent(StudentDto studentDto, Student student) {
         student.setEnrollmentDate(studentDto.getEnrollmentDate());
         student.setName(studentDto.getName());

@@ -31,7 +31,7 @@ public class CourseServiceImpl implements ICourseService {
 
     @Override
     public void addCourse(CourseDto courseDto) {
-        if (courseDto != null) {
+        if (courseDto.getCourseName() != null) {
             Optional<Course> optionalCourse = StudentManagementService
                     .findByCourseName(courseDto.getCourseName().toLowerCase());
             if (optionalCourse.isPresent()) {
