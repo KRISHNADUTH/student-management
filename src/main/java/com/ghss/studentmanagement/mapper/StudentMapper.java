@@ -1,16 +1,18 @@
 package com.ghss.studentmanagement.mapper;
 import java.util.*;
 
+import org.springframework.stereotype.Component;
+
 import com.ghss.studentmanagement.dto.CourseDto;
 import com.ghss.studentmanagement.dto.StudentDto;
 import com.ghss.studentmanagement.exception.ResourceNotFoundException;
 import com.ghss.studentmanagement.model.Course;
 import com.ghss.studentmanagement.model.Enrollment;
 import com.ghss.studentmanagement.model.Student;
-import com.ghss.studentmanagement.service.StudentManagementService;
 
+@Component
 public class StudentMapper {
-    public static Student mapToStudent(StudentDto studentDto, Student student, List<Course> availableCourses) {
+    public Student mapToStudent(StudentDto studentDto, Student student, List<Course> availableCourses) {
         student.setEnrollmentDate(studentDto.getEnrollmentDate());
         student.setName(studentDto.getName());
         student.setUserId(studentDto.getUserId());
@@ -37,7 +39,7 @@ public class StudentMapper {
         return student;
     }
 
-    public static StudentDto  mapToStudentDto(Student student, StudentDto studentDto){
+    public StudentDto  mapToStudentDto(Student student, StudentDto studentDto){
         studentDto.setEnrollmentDate(student.getEnrollmentDate());
         studentDto.setName(student.getName());
         studentDto.setUserId(student.getUserId());

@@ -37,11 +37,11 @@ public class StudentManagementService {
     @Autowired
     private CourseRepository courseRepository;
 
-    // @Autowired
-    // private FeePaymentRepository feePaymentRepository;
+    @Autowired
+    StudentMapper studentMapper;
 
-    private static List<Student> students;
-    private static List<Course> courses;
+    private List<Student> students;
+    private List<Course> courses;
 
     @PostConstruct
     public void loadData() {
@@ -61,11 +61,11 @@ public class StudentManagementService {
                 return new ResponseEntity<Object>(String.format("No one enrolled on %s pending for fee payment",date), HttpStatus.BAD_REQUEST);
         if (n <= 0 || n > studentsWithPendingFeesorted.size())
             throw new IllegalArgumentException("Invalid index : " + n);
-        StudentDto studentDto = StudentMapper.mapToStudentDto(studentsWithPendingFeesorted.get(n - 1), new StudentDto());
+        StudentDto studentDto = studentMapper.mapToStudentDto(studentsWithPendingFeesorted.get(n - 1), new StudentDto());
         return new ResponseEntity<Object>(studentDto, HttpStatus.OK);
     }
 
-    public static Optional<Course> findByCourseName(String courseName) {
+    public Optional<Course> findByCourseName(String courseName) {
         return courses.stream().filter(c -> c.getCourseName().equals(courseName)).findFirst();
     }
 
@@ -84,7 +84,7 @@ public class StudentManagementService {
 
         List<StudentDto> studentDtos = new ArrayList<>();
         for (Student student : studentIdsWithMultipleCoursesNoFeesPrevYear) {
-            studentDtos.add(StudentMapper.mapToStudentDto(student, new StudentDto()));
+            studentDtos.add(studentMapper.mapToStudentDto(student, new StudentDto()));
         }
 
         return studentDtos;
@@ -121,7 +121,7 @@ public class StudentManagementService {
 
         List<StudentDto> studentDtos = new ArrayList<>();
         for (Student student : top5Students) {
-            studentDtos.add(StudentMapper.mapToStudentDto(student, new StudentDto()));
+            studentDtos.add(studentMapper.mapToStudentDto(student, new StudentDto()));
         }
 
         return studentDtos;
@@ -138,7 +138,7 @@ public class StudentManagementService {
         List<StudentDto> studentDtos = new ArrayList<>();
 
         for (Student student : studentsEnrolledInAllCourse) {
-            studentDtos.add(StudentMapper.mapToStudentDto(student, new StudentDto()));
+            studentDtos.add(studentMapper.mapToStudentDto(student, new StudentDto()));
         }
 
         return studentDtos;

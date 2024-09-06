@@ -32,7 +32,7 @@ public class CourseServiceImpl implements ICourseService {
     @Override
     public void addCourse(CourseDto courseDto) {
         if (courseDto.getCourseName() != null) {
-            Optional<Course> optionalCourse = StudentManagementService
+            Optional<Course> optionalCourse = studentManagementService
                     .findByCourseName(courseDto.getCourseName().toLowerCase());
             if (optionalCourse.isPresent()) {
                 throw new ResourseAlreadyExistsException("Course", "name", courseDto.getCourseName());
