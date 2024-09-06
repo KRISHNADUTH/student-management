@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.json.JSONObject;
 import org.junit.jupiter.api.AfterEach;
@@ -16,6 +17,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -31,6 +33,7 @@ import com.ghss.studentmanagement.service.impl.CourseServiceImpl;
 import com.ghss.studentmanagement.service.impl.StudentServiceImpl;
 
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -44,8 +47,8 @@ class StudentmanagementApplicationTests {
 	private MockMvc mvc;
 
 
-	@Autowired
-	StudentManagementService studentManagementService;
+    @MockBean
+    private StudentManagementService studentManagementService;
 
 	@Test
 	void contextLoads() {
@@ -84,6 +87,7 @@ class StudentmanagementApplicationTests {
 	public void testAddStudent() throws Exception {
 		List<CourseDto> courseDtos = Arrays.asList(new CourseDto("python", 2000), new CourseDto("java", 6000),
 				new CourseDto("go", 4000));
+		when(studentManagementService.findByCourseName("python")).thenReturn(Optional.of(new Course(1L, "python", 2000, null)));
 		mvc.perform(post("/students/add-student").contentType(MediaType.APPLICATION_JSON_VALUE)
 				.content(getStudentDetails("Krishna", LocalDate.of(2023, 12, 11), courseDtos, 010).toString()))
 				.andExpect(status().isCreated());
