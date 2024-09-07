@@ -487,7 +487,7 @@ class StudentmanagementApplicationTests {
 		MvcResult res = mvc.perform(post("/students/add-student").contentType(MediaType.APPLICATION_JSON_VALUE)
 		.content(getStudentDetails("kr", "", null, Arrays.asList(new CourseDto("solidity", 0)), 0).toString())).andExpect(status().isBadRequest()).andReturn();
 		String actualRes = res.getResponse().getContentAsString();
-		System.out.println("Actual ressponseeeeeeeeeeeeeeeee ---------------------- "+actualRes);
+		
 		String expectedRes = "{\"name\":\"Name should have characters between 3-30.\",\"userId\":\"User Id is mandatory\"}";
 
 		assertEquals(expectedRes, actualRes);
