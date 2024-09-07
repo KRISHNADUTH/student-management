@@ -53,41 +53,45 @@ public class StudentManagementService {
     }
 
     public ResponseEntity<Object> findNthStudentByEnrollmentDateWithHighestPendingFee(int n, LocalDate date) {
-        List<Student> studentsWithPendingFeesorted = students.stream().filter(s -> s.getEnrollmentDate().isEqual(date)&&s.getPendingFee()>0)
+        List<Student> studentsWithPendingFeesorted = students.stream()
+                .filter(s -> s.getEnrollmentDate().isEqual(date) && s.getPendingFee() > 0)
                 .sorted((o1, o2) -> {
                     return o1.getPendingFee() < o2.getPendingFee() ? 1 : -1;
                 }).collect(Collectors.toList());
-        if(studentsWithPendingFeesorted.size() == 0)
-                return new ResponseEntity<Object>(String.format("No one enrolled on %s pending for fee payment",date), HttpStatus.BAD_REQUEST);
+        if (studentsWithPendingFeesorted.size() == 0)
+            return new ResponseEntity<>(String.format("No one enrolled on %s pending for fee payment", date),
+                    HttpStatus.BAD_REQUEST);
         if (n <= 0 || n > studentsWithPendingFeesorted.size())
             throw new IllegalArgumentException("Invalid index : " + n);
-        StudentDto studentDto = studentMapper.mapToStudentDto(studentsWithPendingFeesorted.get(n - 1), new StudentDto());
-        return new ResponseEntity<Object>(studentDto, HttpStatus.OK);
+        StudentDto studentDto = studentMapper.mapToStudentDto(studentsWithPendingFeesorted.get(n - 1),
+                new StudentDto());
+        return new ResponseEntity<>(studentDto, HttpStatus.OK);
     }
 
     public Optional<Course> findByCourseName(String courseName) {
         return courses.stream().filter(c -> c.getCourseName().equals(courseName)).findFirst();
     }
 
-    public List<StudentDto> findStudentsWithNoFeesInLastYearAndMultipleCourses() {
+    public ResponseEntity<Object> findStudentsWithNoFeesInLastYearAndMultipleCourses() {
+        if (students.size() < 1)
+            return new ResponseEntity<>("No enrollments yet.",
+                    HttpStatus.BAD_REQUEST);
         LocalDate oneYearAgo = LocalDate.now().minus(1, ChronoUnit.YEARS);
 
-        List<Student> studentIdsWithMultipleCoursesNoFeesPrevYear = students.stream().filter(s -> {
-            if (s.getEnrollmentDate().getYear() == oneYearAgo.getYear() && s.getEnrollments().size() > 1) {
-                return true;
-            } else {
-                return false;
-            }
-        }).filter(s -> s.getEnrollments().stream().filter(e -> e.getAmountPaid() == 0).count() == s.getEnrollments()
-                .size())
+        List<Student> studentIdsWithMultipleCoursesNoFeesPrevYear = students.stream()
+                .filter(s -> s.getEnrollmentDate().getYear() == oneYearAgo.getYear() && s.getEnrollments().size() > 1)
+                .filter(s -> s.getEnrollments().stream().allMatch(e -> e.getAmountPaid() == 0))
                 .collect(Collectors.toList());
-
+        if (studentIdsWithMultipleCoursesNoFeesPrevYear.size() < 1) {
+            return new ResponseEntity<>("No one enrolled in previous year pending for fee payment.",
+                    HttpStatus.BAD_REQUEST);
+        }
         List<StudentDto> studentDtos = new ArrayList<>();
         for (Student student : studentIdsWithMultipleCoursesNoFeesPrevYear) {
             studentDtos.add(studentMapper.mapToStudentDto(student, new StudentDto()));
         }
 
-        return studentDtos;
+        return ResponseEntity.status(HttpStatus.OK).body(studentDtos);
     }
 
     public Map<LocalDate, Double> getAverageFeeCollectedPerStudentPerBatch() {
@@ -149,9 +153,8 @@ public class StudentManagementService {
     }
 
     public Optional<Student> existByUserId(String userId) {
-        return students.stream().filter(s->s.getUserId().equals(userId)).findFirst();
+        return students.stream().filter(s -> s.getUserId().equals(userId)).findFirst();
     }
-
 
     /*
      * public Map<LocalDate, Double> getAverageFeeCollectedPerCoursePerBatch() {

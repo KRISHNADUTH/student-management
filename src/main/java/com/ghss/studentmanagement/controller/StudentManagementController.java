@@ -39,7 +39,7 @@ public class StudentManagementController {
     // Returns list of students who have enrolled in multiple courses and not paid
     // any fees in prev year, with the details of fees of those courses
     @GetMapping("/lastyear-no-fee-multiple-courses")
-    public List<StudentDto> findStudentsWithNoFeesInLastYearAndMultipleCourses() {
+    public ResponseEntity<Object> findStudentsWithNoFeesInLastYearAndMultipleCourses() {
         return studentManagementService.findStudentsWithNoFeesInLastYearAndMultipleCourses();
     }
 
