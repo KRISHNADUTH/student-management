@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ghss.studentmanagement.dto.StudentDto;
-import com.ghss.studentmanagement.exception.ResourseAlreadyExistsException;
+import com.ghss.studentmanagement.exception.ResourceAlreadyExistsException;
 import com.ghss.studentmanagement.mapper.StudentMapper;
 import com.ghss.studentmanagement.model.Student;
 import com.ghss.studentmanagement.repo.CourseRepository;
@@ -28,16 +28,16 @@ public class StudentServiceImpl implements IStudentService {
 
     @Override
     public void addStudent(StudentDto studentDto) {
-        if (studentDto != null) {
+        if (studentDto.getName() != null && !studentDto.getName().isEmpty()) {
             if (studentManagementService.existByUserId(studentDto.getUserId()).isPresent()) {
-                throw new ResourseAlreadyExistsException("Student", "user id", studentDto.getUserId());
+                throw new ResourceAlreadyExistsException("Student", "user id", studentDto.getUserId());
             }
             Student student = studentMapper.mapToStudent(studentDto, new Student(),
                     studentManagementService.getAllCourses());
             studentRepository.save(student);
             studentManagementService.loadData();
         } else {
-            throw new NullPointerException("Please provide valid entries");
+            throw new IllegalArgumentException("Course name must not be null or empty.");
         }
     }
 

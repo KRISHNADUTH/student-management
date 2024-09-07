@@ -1,9 +1,6 @@
 package com.ghss.studentmanagement.controller;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
-
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ghss.studentmanagement.dto.StudentDto;
 import com.ghss.studentmanagement.service.StudentManagementService;
 
 import lombok.AllArgsConstructor;
@@ -44,17 +40,17 @@ public class StudentManagementController {
     }
 
     @GetMapping("/avg-fees")
-    public Map<LocalDate, Double> getAverageFeeCollectedPerStudentPerBatch() {
+    public ResponseEntity<Object> getAverageFeeCollectedPerStudentPerBatch() {
         return studentManagementService.getAverageFeeCollectedPerStudentPerBatch();
     }
 
     @GetMapping("/top-5-longest-delinquent-payment")
-    public List<StudentDto> findTop5StudentsWithLongestDelinquentPaymentHistory() {
+    public ResponseEntity<Object> findTop5StudentsWithLongestDelinquentPaymentHistory() {
         return studentManagementService.findTop5StudentsWithLongestDelinquentPaymentHistory();
     }
 
     @GetMapping("/enrolled-in-all-courses-not-paid")
-    public List<StudentDto> findStudentsEnrolledInAllCoursesButNotPaidFees() {
+    public ResponseEntity<Object> findStudentsEnrolledInAllCoursesButNotPaidFees() {
         return studentManagementService.findStudentsEnrolledInAllCoursesButNotPaidFees();
     }
 

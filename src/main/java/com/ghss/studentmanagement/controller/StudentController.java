@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ghss.studentmanagement.constatnts.StudentManagementConstants;
 import com.ghss.studentmanagement.dto.ResponseDto;
 import com.ghss.studentmanagement.dto.StudentDto;
 import com.ghss.studentmanagement.service.StudentManagementService;
@@ -34,7 +35,7 @@ public class StudentController {
     public ResponseEntity<ResponseDto> addStudent(@Valid @RequestBody StudentDto studentDto) {
 
         studentServiceImpl.addStudent(studentDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDto("201", "Student added"));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDto(StudentManagementConstants.STATUS_201, String.format(StudentManagementConstants.MESSAGE_201, "Student")));
     }
 
     @PostMapping("/add-students")

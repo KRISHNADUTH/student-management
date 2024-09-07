@@ -34,8 +34,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<Object>(validationErrors, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(ResourseAlreadyExistsException.class)
-    public ResponseEntity<ErrorResponseDto> handleResourseAlreadyExistsException(ResourseAlreadyExistsException ex,
+    @ExceptionHandler(ResourceAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponseDto> handleResourseAlreadyExistsException(ResourceAlreadyExistsException ex,
             WebRequest request) {
         ErrorResponseDto errorResponseDto = new ErrorResponseDto(request.getDescription(false), HttpStatus.BAD_REQUEST,
                 ex.getMessage(), LocalDateTime.now());

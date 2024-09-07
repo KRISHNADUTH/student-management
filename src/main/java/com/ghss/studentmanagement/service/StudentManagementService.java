@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.ghss.studentmanagement.constatnts.StudentManagementConstants;
 import com.ghss.studentmanagement.dto.StudentDto;
 import com.ghss.studentmanagement.mapper.StudentMapper;
 import com.ghss.studentmanagement.model.Course;
@@ -53,16 +54,23 @@ public class StudentManagementService {
     }
 
     public ResponseEntity<Object> findNthStudentByEnrollmentDateWithHighestPendingFee(int n, LocalDate date) {
+        if (students.size() < 1)
+            return new ResponseEntity<>(StudentManagementConstants.MESSAGE_NO_ENROLLMENT, HttpStatus.BAD_REQUEST);
         List<Student> studentsWithPendingFeesorted = students.stream()
                 .filter(s -> s.getEnrollmentDate().isEqual(date) && s.getPendingFee() > 0)
                 .sorted((o1, o2) -> {
                     return o1.getPendingFee() < o2.getPendingFee() ? 1 : -1;
                 }).collect(Collectors.toList());
-        if (studentsWithPendingFeesorted.size() == 0)
-            return new ResponseEntity<>(String.format("No one enrolled on %s pending for fee payment", date),
+        int studentsWithPendingFee = studentsWithPendingFeesorted.size();
+        if (studentsWithPendingFee <= 0)
+            return new ResponseEntity<>(
+                    String.format(StudentManagementConstants.MESSAGE_NO_PENDING_FEE_PAYMENT_YEAR, date),
                     HttpStatus.BAD_REQUEST);
-        if (n <= 0 || n > studentsWithPendingFeesorted.size())
-            throw new IllegalArgumentException("Invalid index : " + n);
+        if (n > studentsWithPendingFee)
+            return new ResponseEntity<>(
+                    (studentsWithPendingFee > 1 ? studentsWithPendingFee + " are pending with the fee payment"
+                            : "Only one student is pending with the fee payment"),
+                    HttpStatus.BAD_REQUEST);
         StudentDto studentDto = studentMapper.mapToStudentDto(studentsWithPendingFeesorted.get(n - 1),
                 new StudentDto());
         return new ResponseEntity<>(studentDto, HttpStatus.OK);
@@ -74,8 +82,7 @@ public class StudentManagementService {
 
     public ResponseEntity<Object> findStudentsWithNoFeesInLastYearAndMultipleCourses() {
         if (students.size() < 1)
-            return new ResponseEntity<>("No enrollments yet.",
-                    HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(StudentManagementConstants.MESSAGE_NO_ENROLLMENT, HttpStatus.BAD_REQUEST);
         LocalDate oneYearAgo = LocalDate.now().minus(1, ChronoUnit.YEARS);
 
         List<Student> studentIdsWithMultipleCoursesNoFeesPrevYear = students.stream()
@@ -83,7 +90,8 @@ public class StudentManagementService {
                 .filter(s -> s.getEnrollments().stream().allMatch(e -> e.getAmountPaid() == 0))
                 .collect(Collectors.toList());
         if (studentIdsWithMultipleCoursesNoFeesPrevYear.size() < 1) {
-            return new ResponseEntity<>("No one enrolled in previous year pending for fee payment.",
+            return new ResponseEntity<>(
+                    String.format(StudentManagementConstants.MESSAGE_NO_PENDING_FEE_PAYMENT_YEAR, oneYearAgo),
                     HttpStatus.BAD_REQUEST);
         }
         List<StudentDto> studentDtos = new ArrayList<>();
@@ -94,7 +102,9 @@ public class StudentManagementService {
         return ResponseEntity.status(HttpStatus.OK).body(studentDtos);
     }
 
-    public Map<LocalDate, Double> getAverageFeeCollectedPerStudentPerBatch() {
+    public ResponseEntity<Object> getAverageFeeCollectedPerStudentPerBatch() {
+        if (students.size() < 1)
+            return new ResponseEntity<>(StudentManagementConstants.MESSAGE_NO_ENROLLMENT, HttpStatus.BAD_REQUEST);
         Map<LocalDate, Double> totalFeePerBatch = new TreeMap<>();
         Map<LocalDate, Integer> noOfEnrollmentsPerBatch = new TreeMap<>();
         Map<LocalDate, Double> avgFeePerBatch = new TreeMap<>();
@@ -108,44 +118,49 @@ public class StudentManagementService {
             noOfEnrollmentsPerBatch.put(enrollmentDate,
                     noOfEnrollmentsPerBatch.getOrDefault(enrollmentDate, 0) + 1);
         }
-
         for (LocalDate date : totalFeePerBatch.keySet()) {
             avgFeePerBatch.put(date, totalFeePerBatch.get(date) / noOfEnrollmentsPerBatch.get(date));
         }
 
-        return avgFeePerBatch;
+        return ResponseEntity.status(HttpStatus.OK).body(avgFeePerBatch);
     }
 
-    public List<StudentDto> findTop5StudentsWithLongestDelinquentPaymentHistory() {
-        students.sort((s1, s2) -> {
-            return s1.getPendingFee() > s2.getPendingFee() ? -1 : 1;
-        });
+    public ResponseEntity<Object> findTop5StudentsWithLongestDelinquentPaymentHistory() {
+        if (students.size() < 1)
+            return new ResponseEntity<>(StudentManagementConstants.MESSAGE_NO_ENROLLMENT, HttpStatus.BAD_REQUEST);
 
-        List<Student> top5Students = students.size() > 5 ? students.subList(0, 5) : students;
+        List<Student> topStudents = students.stream().filter(s -> s.getPendingFee() > 0)
+                .sorted((s1, s2) -> s1.getPendingFee() > s2.getPendingFee() ? -1 : 1).collect(Collectors.toList());
+        List<Student> top5Students = topStudents.size() > 5 ? topStudents.subList(0, 5) : topStudents;
+
+        if (top5Students.size() < 1)
+            return new ResponseEntity<Object>(StudentManagementConstants.MESSAGE_NO_PENDING_FEE_PAYMENT,
+                    HttpStatus.BAD_REQUEST);
 
         List<StudentDto> studentDtos = new ArrayList<>();
         for (Student student : top5Students) {
             studentDtos.add(studentMapper.mapToStudentDto(student, new StudentDto()));
         }
 
-        return studentDtos;
+        return ResponseEntity.status(HttpStatus.OK).body(studentDtos);
     }
 
-    public List<StudentDto> findStudentsEnrolledInAllCoursesButNotPaidFees() {
-        int totalNoOfCourses = courses.size();
-        List<Student> studentsEnrolledInAllCourse = students.stream().filter(s -> {
-            if (s.getEnrollments().size() == totalNoOfCourses && s.getPendingFee() > 0)
-                return true;
-            return false;
-        }).collect(Collectors.toList());
+    public ResponseEntity<Object> findStudentsEnrolledInAllCoursesButNotPaidFees() {
+        if (students.size() < 1)
+            return new ResponseEntity<>(StudentManagementConstants.MESSAGE_NO_ENROLLMENT, HttpStatus.BAD_REQUEST);
 
+        int totalNoOfCourses = courses.size();
+        List<Student> studentsEnrolledInAllCourseAndNoFee = students.stream()
+                .filter(s -> (s.getEnrollments().size() == totalNoOfCourses && s.getPendingFee() > 0))
+                .collect(Collectors.toList());
+        
         List<StudentDto> studentDtos = new ArrayList<>();
 
-        for (Student student : studentsEnrolledInAllCourse) {
+        for (Student student : studentsEnrolledInAllCourseAndNoFee) {
             studentDtos.add(studentMapper.mapToStudentDto(student, new StudentDto()));
         }
 
-        return studentDtos;
+        return ResponseEntity.status(HttpStatus.OK).body(studentDtos);
     }
 
     public List<Course> getAllCourses() {

@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import com.ghss.studentmanagement.constatnts.StudentManagementConstants;
 import com.ghss.studentmanagement.dto.CourseDto;
 import com.ghss.studentmanagement.dto.ResponseDto;
-import com.ghss.studentmanagement.exception.ResourseAlreadyExistsException;
+import com.ghss.studentmanagement.exception.ResourceAlreadyExistsException;
 import com.ghss.studentmanagement.mapper.CourseMapper;
 import com.ghss.studentmanagement.model.Course;
 import com.ghss.studentmanagement.repo.CourseRepository;
@@ -31,18 +31,18 @@ public class CourseServiceImpl implements ICourseService {
 
     @Override
     public void addCourse(CourseDto courseDto) {
-        if (courseDto.getCourseName() != null) {
+        if (courseDto.getCourseName() != null && !courseDto.getCourseName().isEmpty()) {
             Optional<Course> optionalCourse = studentManagementService
                     .findByCourseName(courseDto.getCourseName().toLowerCase());
             if (optionalCourse.isPresent()) {
-                throw new ResourseAlreadyExistsException("Course", "name", courseDto.getCourseName());
+                throw new ResourceAlreadyExistsException("Course", "name", courseDto.getCourseName());
             } else {
                 Course course = CourseMapper.mapToCourse(courseDto, new Course());
                 courseRepository.save(course);
                 studentManagementService.loadData();
             }
         } else {
-            throw new NullPointerException("Please provide valid entries");
+            throw new IllegalArgumentException("Course name must not be null or empty.");
         }
     }
 
