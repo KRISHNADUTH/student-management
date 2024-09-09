@@ -1,0 +1,188 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > StudentController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.ghss.studentmanagement.controller</a>
+</div>
+
+<h1>Coverage Summary for Class: StudentController (com.ghss.studentmanagement.controller)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">StudentController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (3/3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (7/7)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">StudentController$$EnhancerBySpringCGLIB$$fe4fc4df</td>
+  </tr>
+  <tr>
+    <td class="name">StudentController$$EnhancerBySpringCGLIB$$fe4fc4df$$FastClassBySpringCGLIB$$456de68</td>
+  </tr>
+  <tr>
+    <td class="name">StudentController$$FastClassBySpringCGLIB$$c4863815</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (3/3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (7/7)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.ghss.studentmanagement.controller;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;import javax.validation.Valid;
+&nbsp;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.http.HttpStatus;
+&nbsp;import org.springframework.http.MediaType;
+&nbsp;import org.springframework.http.ResponseEntity;
+&nbsp;import org.springframework.validation.annotation.Validated;
+&nbsp;import org.springframework.web.bind.annotation.PostMapping;
+&nbsp;import org.springframework.web.bind.annotation.RequestBody;
+&nbsp;import org.springframework.web.bind.annotation.RequestMapping;
+&nbsp;import org.springframework.web.bind.annotation.RestController;
+&nbsp;
+&nbsp;import com.ghss.studentmanagement.constatnts.StudentManagementConstants;
+&nbsp;import com.ghss.studentmanagement.dto.ResponseDto;
+&nbsp;import com.ghss.studentmanagement.dto.StudentDto;
+&nbsp;import com.ghss.studentmanagement.service.StudentManagementService;
+&nbsp;import com.ghss.studentmanagement.service.impl.StudentServiceImpl;
+&nbsp;
+&nbsp;@RestController
+&nbsp;@RequestMapping(path = &quot;/students&quot;, produces = MediaType.APPLICATION_JSON_VALUE)
+&nbsp;@Validated
+<b class="fc">&nbsp;public class StudentController {</b>
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    StudentServiceImpl studentServiceImpl;
+&nbsp;    
+&nbsp;    @Autowired
+&nbsp;    StudentManagementService studentManagementService;
+&nbsp;
+&nbsp;    @PostMapping(&quot;/add-student&quot;)
+&nbsp;    public ResponseEntity&lt;ResponseDto&gt; addStudent(@Valid @RequestBody StudentDto studentDto) {
+&nbsp;
+<b class="fc">&nbsp;        studentServiceImpl.addStudent(studentDto);</b>
+<b class="fc">&nbsp;        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDto(StudentManagementConstants.STATUS_201, String.format(StudentManagementConstants.MESSAGE_201, &quot;Student&quot;)));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @PostMapping(&quot;/add-students&quot;)
+&nbsp;    public ResponseEntity&lt;ResponseDto&gt; addStudents(@Valid @RequestBody List&lt;StudentDto&gt; studentDtos) {
+<b class="fc">&nbsp;        for (StudentDto studentDto : studentDtos)</b>
+<b class="fc">&nbsp;            studentServiceImpl.addStudent(studentDto);</b>
+<b class="fc">&nbsp;        studentManagementService.loadData();</b>
+<b class="fc">&nbsp;        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDto(&quot;201&quot;, &quot;Students added&quot;));</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-09-09 07:30</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,315 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > StudentManagementService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.ghss.studentmanagement.service</a>
+</div>
+
+<h1>Coverage Summary for Class: StudentManagementService (com.ghss.studentmanagement.service)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">StudentManagementService</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    76.5%
+  </span>
+  <span class="absValue">
+    (13/17)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    76%
+  </span>
+  <span class="absValue">
+    (38/50)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    90.1%
+  </span>
+  <span class="absValue">
+    (73/81)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.ghss.studentmanagement.service;
+&nbsp;
+&nbsp;import java.time.LocalDate;
+&nbsp;import java.time.temporal.ChronoUnit;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Map;
+&nbsp;import java.util.Optional;
+&nbsp;import java.util.TreeMap;
+&nbsp;import java.util.stream.Collectors;
+&nbsp;
+&nbsp;import javax.annotation.PostConstruct;
+&nbsp;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.http.HttpStatus;
+&nbsp;import org.springframework.http.ResponseEntity;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;
+&nbsp;import com.ghss.studentmanagement.constatnts.StudentManagementConstants;
+&nbsp;import com.ghss.studentmanagement.dto.StudentDto;
+&nbsp;import com.ghss.studentmanagement.mapper.StudentMapper;
+&nbsp;import com.ghss.studentmanagement.model.Course;
+&nbsp;import com.ghss.studentmanagement.model.Student;
+&nbsp;import com.ghss.studentmanagement.repo.CourseRepository;
+&nbsp;import com.ghss.studentmanagement.repo.StudentRepository;
+&nbsp;
+&nbsp;import lombok.Getter;
+&nbsp;import lombok.Setter;
+&nbsp;
+&nbsp;@Service
+&nbsp;@Getter
+<b class="fc">&nbsp;@Setter</b>
+<b class="fc">&nbsp;public class StudentManagementService {</b>
+&nbsp;
+&nbsp;    @Autowired
+<b class="nc">&nbsp;    private StudentRepository studentRepository;</b>
+&nbsp;
+&nbsp;    @Autowired
+<b class="nc">&nbsp;    private CourseRepository courseRepository;</b>
+&nbsp;
+&nbsp;    @Autowired
+<b class="nc">&nbsp;    StudentMapper studentMapper;</b>
+&nbsp;
+<b class="fc">&nbsp;    private List&lt;Student&gt; students;</b>
+<b class="nc">&nbsp;    private List&lt;Course&gt; courses;</b>
+&nbsp;
+&nbsp;    @PostConstruct
+&nbsp;    public void loadData() {
+<b class="fc">&nbsp;        students = studentRepository.findAll();</b>
+<b class="fc">&nbsp;        courses = courseRepository.findAll();</b>
+&nbsp;
+<b class="fc">&nbsp;        System.out.println(&quot;Loaded &quot; + students.size() + &quot; students.&quot;);</b>
+<b class="fc">&nbsp;        System.out.println(&quot;Loaded &quot; + courses.size() + &quot; courses.&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public ResponseEntity&lt;Object&gt; findNthStudentByEnrollmentDateWithHighestPendingFee(int n, LocalDate date) {
+<b class="pc">&nbsp;        if (students.size() &lt; 1)</b>
+<b class="nc">&nbsp;            return new ResponseEntity&lt;&gt;(StudentManagementConstants.MESSAGE_NO_ENROLLMENT, HttpStatus.BAD_REQUEST);</b>
+<b class="fc">&nbsp;        List&lt;Student&gt; studentsWithPendingFeesorted = students.stream()</b>
+<b class="fc">&nbsp;                .filter(s -&gt; s.getEnrollmentDate().isEqual(date) &amp;&amp; s.getPendingFee() &gt; 0)</b>
+<b class="fc">&nbsp;                .sorted((o1, o2) -&gt; {</b>
+<b class="pc">&nbsp;                    return o1.getPendingFee() &lt; o2.getPendingFee() ? 1 : -1;</b>
+<b class="fc">&nbsp;                }).collect(Collectors.toList());</b>
+<b class="fc">&nbsp;        int studentsWithPendingFee = studentsWithPendingFeesorted.size();</b>
+<b class="fc">&nbsp;        if (studentsWithPendingFee &lt;= 0)</b>
+<b class="fc">&nbsp;            return new ResponseEntity&lt;&gt;(</b>
+<b class="fc">&nbsp;                    String.format(StudentManagementConstants.MESSAGE_NO_PENDING_FEE_PAYMENT_YEAR, date),</b>
+&nbsp;                    HttpStatus.BAD_REQUEST);
+<b class="fc">&nbsp;        if (n &gt; studentsWithPendingFee)</b>
+<b class="fc">&nbsp;            return new ResponseEntity&lt;&gt;(</b>
+<b class="pc">&nbsp;                    (studentsWithPendingFee &gt; 1 ? studentsWithPendingFee + &quot; are pending with the fee payment&quot;</b>
+<b class="nc">&nbsp;                            : &quot;Only one student is pending with the fee payment&quot;),</b>
+&nbsp;                    HttpStatus.BAD_REQUEST);
+<b class="fc">&nbsp;        StudentDto studentDto = studentMapper.mapToStudentDto(studentsWithPendingFeesorted.get(n - 1),</b>
+&nbsp;                new StudentDto());
+<b class="fc">&nbsp;        return new ResponseEntity&lt;&gt;(studentDto, HttpStatus.OK);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public Optional&lt;Course&gt; findByCourseName(String courseName) {
+<b class="fc">&nbsp;        return courses.stream().filter(c -&gt; c.getCourseName().equals(courseName)).findFirst();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public ResponseEntity&lt;Object&gt; findStudentsWithNoFeesInLastYearAndMultipleCourses() {
+<b class="fc">&nbsp;        if (students.size() &lt; 1)</b>
+<b class="fc">&nbsp;            return new ResponseEntity&lt;&gt;(StudentManagementConstants.MESSAGE_NO_ENROLLMENT, HttpStatus.BAD_REQUEST);</b>
+<b class="fc">&nbsp;        LocalDate oneYearAgo = LocalDate.now().minus(1, ChronoUnit.YEARS);</b>
+&nbsp;
+<b class="fc">&nbsp;        List&lt;Student&gt; studentIdsWithMultipleCoursesNoFeesPrevYear = students.stream()</b>
+<b class="pc">&nbsp;                .filter(s -&gt; s.getEnrollmentDate().getYear() == oneYearAgo.getYear() &amp;&amp; s.getEnrollments().size() &gt; 1)</b>
+<b class="fc">&nbsp;                .filter(s -&gt; s.getEnrollments().stream().allMatch(e -&gt; e.getAmountPaid() == 0))</b>
+<b class="fc">&nbsp;                .collect(Collectors.toList());</b>
+<b class="fc">&nbsp;        if (studentIdsWithMultipleCoursesNoFeesPrevYear.size() &lt; 1) {</b>
+<b class="fc">&nbsp;            return new ResponseEntity&lt;&gt;(</b>
+<b class="fc">&nbsp;                    String.format(StudentManagementConstants.MESSAGE_NO_PENDING_FEE_PAYMENT_YEAR, oneYearAgo),</b>
+&nbsp;                    HttpStatus.BAD_REQUEST);
+&nbsp;        }
+<b class="fc">&nbsp;        List&lt;StudentDto&gt; studentDtos = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;        for (Student student : studentIdsWithMultipleCoursesNoFeesPrevYear) {</b>
+<b class="fc">&nbsp;            studentDtos.add(studentMapper.mapToStudentDto(student, new StudentDto()));</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        return ResponseEntity.status(HttpStatus.OK).body(studentDtos);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public ResponseEntity&lt;Object&gt; getAverageFeeCollectedPerStudentPerBatch() {
+<b class="fc">&nbsp;        if (students.size() &lt; 1)</b>
+<b class="fc">&nbsp;            return new ResponseEntity&lt;&gt;(StudentManagementConstants.MESSAGE_NO_ENROLLMENT, HttpStatus.BAD_REQUEST);</b>
+<b class="fc">&nbsp;        Map&lt;LocalDate, Double&gt; totalFeePerBatch = new TreeMap&lt;&gt;();</b>
+<b class="fc">&nbsp;        Map&lt;LocalDate, Integer&gt; noOfEnrollmentsPerBatch = new TreeMap&lt;&gt;();</b>
+<b class="fc">&nbsp;        Map&lt;LocalDate, Double&gt; avgFeePerBatch = new TreeMap&lt;&gt;();</b>
+&nbsp;
+<b class="fc">&nbsp;        for (Student student : students) {</b>
+<b class="fc">&nbsp;            LocalDate enrollmentDate = student.getEnrollmentDate();</b>
+&nbsp;
+<b class="fc">&nbsp;            totalFeePerBatch.put(enrollmentDate,</b>
+<b class="fc">&nbsp;                    totalFeePerBatch.getOrDefault(enrollmentDate, 0.0) + student.getTotalFeePaid());</b>
+&nbsp;
+<b class="fc">&nbsp;            noOfEnrollmentsPerBatch.put(enrollmentDate,</b>
+<b class="fc">&nbsp;                    noOfEnrollmentsPerBatch.getOrDefault(enrollmentDate, 0) + 1);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        for (LocalDate date : totalFeePerBatch.keySet()) {</b>
+<b class="fc">&nbsp;            avgFeePerBatch.put(date, totalFeePerBatch.get(date) / noOfEnrollmentsPerBatch.get(date));</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        return ResponseEntity.status(HttpStatus.OK).body(avgFeePerBatch);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public ResponseEntity&lt;Object&gt; findTop5StudentsWithLongestDelinquentPaymentHistory() {
+<b class="fc">&nbsp;        if (students.size() &lt; 1)</b>
+<b class="fc">&nbsp;            return new ResponseEntity&lt;&gt;(StudentManagementConstants.MESSAGE_NO_ENROLLMENT, HttpStatus.BAD_REQUEST);</b>
+&nbsp;
+<b class="pc">&nbsp;        List&lt;Student&gt; topStudents = students.stream().filter(s -&gt; s.getPendingFee() &gt; 0)</b>
+<b class="pc">&nbsp;                .sorted((s1, s2) -&gt; s1.getPendingFee() &gt; s2.getPendingFee() ? -1 : 1).collect(Collectors.toList());</b>
+<b class="pc">&nbsp;        List&lt;Student&gt; top5Students = topStudents.size() &gt; 5 ? topStudents.subList(0, 5) : topStudents;</b>
+&nbsp;
+<b class="pc">&nbsp;        if (top5Students.size() &lt; 1)</b>
+<b class="nc">&nbsp;            return new ResponseEntity&lt;Object&gt;(StudentManagementConstants.MESSAGE_NO_PENDING_FEE_PAYMENT,</b>
+&nbsp;                    HttpStatus.BAD_REQUEST);
+&nbsp;
+<b class="fc">&nbsp;        List&lt;StudentDto&gt; studentDtos = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;        for (Student student : top5Students) {</b>
+<b class="fc">&nbsp;            studentDtos.add(studentMapper.mapToStudentDto(student, new StudentDto()));</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        return ResponseEntity.status(HttpStatus.OK).body(studentDtos);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public ResponseEntity&lt;Object&gt; findStudentsEnrolledInAllCoursesButNotPaidFees() {
+<b class="pc">&nbsp;        if (students.size() &lt; 1)</b>
+<b class="nc">&nbsp;            return new ResponseEntity&lt;&gt;(StudentManagementConstants.MESSAGE_NO_ENROLLMENT, HttpStatus.BAD_REQUEST);</b>
+&nbsp;
+<b class="fc">&nbsp;        int totalNoOfCourses = courses.size();</b>
+<b class="fc">&nbsp;        System.out.println(&quot;Total number of courses for this test is ..................&quot;+totalNoOfCourses);</b>
+<b class="fc">&nbsp;        List&lt;Student&gt; studentsEnrolledInAllCourseAndNoFee = students.stream()</b>
+<b class="pc">&nbsp;                .filter(s -&gt; (s.getEnrollments().size() == totalNoOfCourses &amp;&amp; s.getPendingFee() &gt; 0))</b>
+<b class="fc">&nbsp;                .collect(Collectors.toList());</b>
+&nbsp;        
+<b class="fc">&nbsp;        List&lt;StudentDto&gt; studentDtos = new ArrayList&lt;&gt;();</b>
+&nbsp;
+<b class="fc">&nbsp;        for (Student student : studentsEnrolledInAllCourseAndNoFee) {</b>
+<b class="fc">&nbsp;            studentDtos.add(studentMapper.mapToStudentDto(student, new StudentDto()));</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        return ResponseEntity.status(HttpStatus.OK).body(studentDtos);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public List&lt;Course&gt; getAllCourses() {
+<b class="fc">&nbsp;        return courses;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public Optional&lt;Student&gt; existByUserId(String userId) {
+<b class="fc">&nbsp;        return students.stream().filter(s -&gt; s.getUserId().equals(userId)).findFirst();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /*
+&nbsp;     * public Map&lt;LocalDate, Double&gt; getAverageFeeCollectedPerCoursePerBatch() {
+&nbsp;     * Map&lt;LocalDate, Double&gt; totalFeePerBatch = new TreeMap&lt;&gt;();
+&nbsp;     * Map&lt;LocalDate, Integer&gt; noOfEnrollmentsPerBatch = new TreeMap&lt;&gt;();
+&nbsp;     * Map&lt;LocalDate, Double&gt; avgFeePerBatch = new TreeMap&lt;&gt;();
+&nbsp;     * 
+&nbsp;     * for (Enrollment enrollment : enrollments) {
+&nbsp;     * LocalDate enrollmentDate = enrollment.getEnrollmentDate();
+&nbsp;     * totalFeePerBatch.put(enrollmentDate,
+&nbsp;     * totalFeePerBatch.getOrDefault(enrollmentDate, 0.0) +
+&nbsp;     * enrollment.getAmountPaid());
+&nbsp;     * noOfEnrollmentsPerBatch.put(enrollmentDate,
+&nbsp;     * noOfEnrollmentsPerBatch.getOrDefault(enrollmentDate, 0) + 1);
+&nbsp;     * }
+&nbsp;     * 
+&nbsp;     * for (LocalDate date : totalFeePerBatch.keySet()) {
+&nbsp;     * avgFeePerBatch.put(date, totalFeePerBatch.get(date) /
+&nbsp;     * noOfEnrollmentsPerBatch.get(date));
+&nbsp;     * }
+&nbsp;     * 
+&nbsp;     * return avgFeePerBatch;
+&nbsp;     * }
+&nbsp;     */
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-09-09 07:30</div>
+</div>
+</body>
+</html>

@@ -459,23 +459,26 @@ class StudentmanagementApplicationTests {
 		studentManagementService.setStudents(
 				Arrays.asList(
 						new Student(1L, "krish@123", "Krishna", LocalDate.of(2014, 10, 023), 10000, 1000,
-								Collections.nCopies(7, new Enrollment(1L, null, new Course(null, "Java", 1000, null), 0, null))),
+								Collections.nCopies(8,
+										new Enrollment(1L, null, new Course(null, "Java", 1000, null), 0, null))),
 						new Student(1L, "das@123", "Das", LocalDate.of(2014, 10, 023), 10000, 1000,
-								Collections.nCopies(7, new Enrollment(2L, null, new Course(null, "Python", 1000, null), 0, null)))));
+								Collections.nCopies(8,
+										new Enrollment(2L, null, new Course(null, "Python", 1000, null), 0, null)))));
 
-		MvcResult res = mvc.perform(get("/student/top-5-longest-delinquent-payment"))
+		MvcResult res = mvc.perform(get("/student/enrolled-in-all-courses-not-paid"))
 				.andExpect(status().isOk()).andReturn();
 		String actualRes = res.getResponse().getContentAsString();
-		String expectedRes = "[{\"name\":\"Krishna\",\"userId\":\"krish@123\",\"enrollmentDate\":\"2014-10-19\",\"courses\":[{\"courseName\":\"Java\",\"courseFee\":1000.0},{\"courseName\":\"Java\",\"courseFee\":1000.0},{\"courseName\":\"Java\",\"courseFee\":1000.0},{\"courseName\":\"Java\",\"courseFee\":1000.0},{\"courseName\":\"Java\",\"courseFee\":1000.0},{\"courseName\":\"Java\",\"courseFee\":1000.0},{\"courseName\":\"Java\",\"courseFee\":1000.0}],\"pendingFee\":1000.0},{\"name\":\"Das\",\"userId\":\"das@123\",\"enrollmentDate\":\"2014-10-19\",\"courses\":[{\"courseName\":\"Python\",\"courseFee\":1000.0},{\"courseName\":\"Python\",\"courseFee\":1000.0},{\"courseName\":\"Python\",\"courseFee\":1000.0},{\"courseName\":\"Python\",\"courseFee\":1000.0},{\"courseName\":\"Python\",\"courseFee\":1000.0},{\"courseName\":\"Python\",\"courseFee\":1000.0},{\"courseName\":\"Python\",\"courseFee\":1000.0}],\"pendingFee\":1000.0}]";
+		String expectedRes = "[{\"name\":\"Krishna\",\"userId\":\"krish@123\",\"enrollmentDate\":\"2014-10-19\",\"courses\":[{\"courseName\":\"Java\",\"courseFee\":1000.0},{\"courseName\":\"Java\",\"courseFee\":1000.0},{\"courseName\":\"Java\",\"courseFee\":1000.0},{\"courseName\":\"Java\",\"courseFee\":1000.0},{\"courseName\":\"Java\",\"courseFee\":1000.0},{\"courseName\":\"Java\",\"courseFee\":1000.0},{\"courseName\":\"Java\",\"courseFee\":1000.0},{\"courseName\":\"Java\",\"courseFee\":1000.0}],\"pendingFee\":1000.0},{\"name\":\"Das\",\"userId\":\"das@123\",\"enrollmentDate\":\"2014-10-19\",\"courses\":[{\"courseName\":\"Python\",\"courseFee\":1000.0},{\"courseName\":\"Python\",\"courseFee\":1000.0},{\"courseName\":\"Python\",\"courseFee\":1000.0},{\"courseName\":\"Python\",\"courseFee\":1000.0},{\"courseName\":\"Python\",\"courseFee\":1000.0},{\"courseName\":\"Python\",\"courseFee\":1000.0},{\"courseName\":\"Python\",\"courseFee\":1000.0},{\"courseName\":\"Python\",\"courseFee\":1000.0}],\"pendingFee\":1000.0}]";
+
 
 		assertEquals(expectedRes, actualRes);
 	}
 
 	@Test
 	@Order(14)
-	public void addCourse_validation() throws Exception{
+	public void addCourse_validation() throws Exception {
 		MvcResult res = mvc.perform(post("/courses/add-course").contentType(MediaType.APPLICATION_JSON_VALUE)
-		.content(getCourseDetails("", -123).toString())).andExpect(status().isBadRequest()).andReturn();
+				.content(getCourseDetails("", -123).toString())).andExpect(status().isBadRequest()).andReturn();
 		String actualRes = res.getResponse().getContentAsString();
 		String expectedRes = "{\"courseName\":\"Course name should not be null or empty.\",\"courseFee\":\"Course fee should not be negative\"}";
 		assertEquals(expectedRes, actualRes);
@@ -483,17 +486,16 @@ class StudentmanagementApplicationTests {
 
 	@Test
 	@Order(15)
-	public void addStudent_validation() throws Exception{
+	public void addStudent_validation() throws Exception {
 		MvcResult res = mvc.perform(post("/students/add-student").contentType(MediaType.APPLICATION_JSON_VALUE)
-		.content(getStudentDetails("kr", "", null, Arrays.asList(new CourseDto("solidity", 0)), 0).toString())).andExpect(status().isBadRequest()).andReturn();
+				.content(getStudentDetails("kr", "", null, Arrays.asList(new CourseDto("solidity", 0)), 0).toString()))
+				.andExpect(status().isBadRequest()).andReturn();
 		String actualRes = res.getResponse().getContentAsString();
-		
+
 		String expectedRes = "{\"name\":\"Name should have characters between 3-30.\",\"userId\":\"User Id is mandatory\"}";
 
 		assertEquals(expectedRes, actualRes);
 	}
-
-
 
 }
 

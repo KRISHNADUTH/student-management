@@ -1,0 +1,85 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > CourseDto</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.ghss.studentmanagement.dto</a>
+</div>
+
+<h1>Coverage Summary for Class: CourseDto (com.ghss.studentmanagement.dto)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">CourseDto</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.ghss.studentmanagement.dto;
+&nbsp;
+&nbsp;import javax.validation.constraints.NotEmpty;
+&nbsp;import javax.validation.constraints.PositiveOrZero;
+&nbsp;import lombok.AllArgsConstructor;
+&nbsp;import lombok.Data;
+&nbsp;import lombok.NoArgsConstructor;
+&nbsp;
+&nbsp;@Data
+&nbsp;@AllArgsConstructor
+&nbsp;@NoArgsConstructor
+&nbsp;public class CourseDto {
+&nbsp;    @NotEmpty(message = &quot;Course name should not be null or empty.&quot;)
+&nbsp;    private String courseName;
+&nbsp;    @PositiveOrZero(message = &quot;Course fee should not be negative&quot;)
+&nbsp;    private double courseFee;  // This variable records whether student paid fees while enrolling course(POSTing student), value will be zero when no payment is made.
+&nbsp;}                              // While POSTing new student it recods fees of a course.
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-09-09 07:30</div>
+</div>
+</body>
+</html>

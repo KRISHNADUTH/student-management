@@ -1,0 +1,122 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > CourseMapper</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.ghss.studentmanagement.mapper</a>
+</div>
+
+<h1>Coverage Summary for Class: CourseMapper (com.ghss.studentmanagement.mapper)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CourseMapper</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    66.7%
+  </span>
+  <span class="absValue">
+    (2/3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    85.7%
+  </span>
+  <span class="absValue">
+    (6/7)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.ghss.studentmanagement.mapper;
+&nbsp;
+&nbsp;import com.ghss.studentmanagement.dto.CourseDto;
+&nbsp;import com.ghss.studentmanagement.model.Course;
+&nbsp;
+<b class="nc">&nbsp;public class CourseMapper {</b>
+&nbsp;    public static Course mapToCourse(CourseDto courseDto, Course course){
+<b class="fc">&nbsp;        course.setCourseName(courseDto.getCourseName());</b>
+<b class="fc">&nbsp;        course.setCourseFee(courseDto.getCourseFee());</b>
+<b class="fc">&nbsp;        return course;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public static CourseDto mapToCourseDto(Course course, CourseDto courseDto){
+<b class="fc">&nbsp;        courseDto.setCourseName(course.getCourseName());</b>
+<b class="fc">&nbsp;        courseDto.setCourseFee(course.getCourseFee());</b>
+<b class="fc">&nbsp;        return courseDto;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-09-09 07:30</div>
+</div>
+</body>
+</html>

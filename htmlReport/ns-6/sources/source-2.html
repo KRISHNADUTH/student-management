@@ -1,0 +1,172 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > StudentMapper</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.ghss.studentmanagement.mapper</a>
+</div>
+
+<h1>Coverage Summary for Class: StudentMapper (com.ghss.studentmanagement.mapper)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">StudentMapper</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (3/3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    83.3%
+  </span>
+  <span class="absValue">
+    (5/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    96.9%
+  </span>
+  <span class="absValue">
+    (31/32)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.ghss.studentmanagement.mapper;
+&nbsp;import java.util.*;
+&nbsp;
+&nbsp;import org.springframework.stereotype.Component;
+&nbsp;
+&nbsp;import com.ghss.studentmanagement.dto.CourseDto;
+&nbsp;import com.ghss.studentmanagement.dto.StudentDto;
+&nbsp;import com.ghss.studentmanagement.exception.ResourceNotFoundException;
+&nbsp;import com.ghss.studentmanagement.model.Course;
+&nbsp;import com.ghss.studentmanagement.model.Enrollment;
+&nbsp;import com.ghss.studentmanagement.model.Student;
+&nbsp;
+&nbsp;@Component
+<b class="fc">&nbsp;public class StudentMapper {</b>
+&nbsp;    public Student mapToStudent(StudentDto studentDto, Student student, List&lt;Course&gt; availableCourses) {
+<b class="fc">&nbsp;        student.setEnrollmentDate(studentDto.getEnrollmentDate());</b>
+<b class="fc">&nbsp;        student.setName(studentDto.getName());</b>
+<b class="fc">&nbsp;        student.setUserId(studentDto.getUserId());</b>
+<b class="fc">&nbsp;        List&lt;CourseDto&gt; courseDtos = studentDto.getCourses();</b>
+<b class="fc">&nbsp;        int pendingFee = 0;</b>
+<b class="fc">&nbsp;        int totalFees = 0;</b>
+<b class="fc">&nbsp;        int paidFees = 0;</b>
+<b class="fc">&nbsp;        for (CourseDto courseDto : courseDtos) {</b>
+<b class="fc">&nbsp;            String courseName = courseDto.getCourseName();</b>
+<b class="fc">&nbsp;            Optional&lt;Course&gt; optionalCourse = availableCourses.stream().filter(c -&gt;c.getCourseName().equals(courseName.toLowerCase())).findFirst();</b>
+<b class="pc">&nbsp;            if (!optionalCourse.isPresent()) {</b>
+<b class="nc">&nbsp;                throw new ResourceNotFoundException(&quot;Course&quot;, &quot;course name&quot;, courseName);</b>
+&nbsp;            }
+<b class="fc">&nbsp;            Course course = optionalCourse.get();</b>
+<b class="fc">&nbsp;            Enrollment newEnrollment = new Enrollment(student.getEnrollmentDate(),courseDto.getCourseFee());</b>
+<b class="fc">&nbsp;            totalFees+=course.getCourseFee();</b>
+<b class="fc">&nbsp;            paidFees+=courseDto.getCourseFee();</b>
+<b class="fc">&nbsp;            course.addEnrollment(newEnrollment);</b>
+<b class="fc">&nbsp;            student.addEnrollment(newEnrollment);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        student.setTotalFeePaid(paidFees);</b>
+<b class="fc">&nbsp;        pendingFee = totalFees-paidFees;</b>
+<b class="fc">&nbsp;        student.setPendingFee(pendingFee);</b>
+<b class="fc">&nbsp;        return student;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public StudentDto  mapToStudentDto(Student student, StudentDto studentDto){
+<b class="fc">&nbsp;        studentDto.setEnrollmentDate(student.getEnrollmentDate());</b>
+<b class="fc">&nbsp;        studentDto.setName(student.getName());</b>
+<b class="fc">&nbsp;        studentDto.setUserId(student.getUserId());</b>
+<b class="fc">&nbsp;        List&lt;CourseDto&gt; courseDtos = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;        for(Enrollment enrollment:student.getEnrollments()){</b>
+<b class="fc">&nbsp;            courseDtos.add(new CourseDto(enrollment.getCourse().getCourseName(), enrollment.getCourse().getCourseFee()));</b>
+&nbsp;        }
+<b class="fc">&nbsp;        studentDto.setCourses(courseDtos);</b>
+<b class="fc">&nbsp;        studentDto.setPendingFee(student.getPendingFee());</b>
+&nbsp;        
+<b class="fc">&nbsp;        return studentDto;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-09-09 07:30</div>
+</div>
+</body>
+</html>

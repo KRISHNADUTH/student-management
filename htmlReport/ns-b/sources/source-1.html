@@ -1,0 +1,101 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > StudentDto</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.ghss.studentmanagement.dto</a>
+</div>
+
+<h1>Coverage Summary for Class: StudentDto (com.ghss.studentmanagement.dto)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">StudentDto</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.ghss.studentmanagement.dto;
+&nbsp;
+&nbsp;import java.time.LocalDate;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;import javax.validation.constraints.NotEmpty;
+&nbsp;import javax.validation.constraints.PositiveOrZero;
+&nbsp;import javax.validation.constraints.Size;
+&nbsp;
+&nbsp;import lombok.AllArgsConstructor;
+&nbsp;import lombok.Data;
+&nbsp;import lombok.NoArgsConstructor;
+&nbsp;
+&nbsp;@Data
+&nbsp;@AllArgsConstructor
+&nbsp;@NoArgsConstructor
+&nbsp;public class StudentDto {
+&nbsp;
+&nbsp;    @Size(min = 3, max = 30, message = &quot;Name should have characters between 3-30.&quot;)
+&nbsp;    private String name;
+&nbsp;
+&nbsp;    @NotEmpty(message = &quot;User Id is mandatory&quot;)
+&nbsp;    private String userId;
+&nbsp;
+&nbsp;    private LocalDate enrollmentDate;
+&nbsp;
+&nbsp;    private List&lt;CourseDto&gt; courses;
+&nbsp;
+&nbsp;    @PositiveOrZero(message = &quot;Pending fees should be positive or negative.&quot;)
+&nbsp;    private double pendingFee;
+&nbsp;
+&nbsp;}
+&nbsp;
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-09-09 07:30</div>
+</div>
+</body>
+</html>

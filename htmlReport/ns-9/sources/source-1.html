@@ -1,0 +1,179 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > CourseServiceImpl</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.ghss.studentmanagement.service.impl</a>
+</div>
+
+<h1>Coverage Summary for Class: CourseServiceImpl (com.ghss.studentmanagement.service.impl)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CourseServiceImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (3/3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    75%
+  </span>
+  <span class="absValue">
+    (9/12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    94.4%
+  </span>
+  <span class="absValue">
+    (17/18)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.ghss.studentmanagement.service.impl;
+&nbsp;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Objects;
+&nbsp;import java.util.Optional;
+&nbsp;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.http.HttpStatus;
+&nbsp;import org.springframework.http.ResponseEntity;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;
+&nbsp;import com.ghss.studentmanagement.constatnts.StudentManagementConstants;
+&nbsp;import com.ghss.studentmanagement.dto.CourseDto;
+&nbsp;import com.ghss.studentmanagement.dto.ResponseDto;
+&nbsp;import com.ghss.studentmanagement.exception.ResourceAlreadyExistsException;
+&nbsp;import com.ghss.studentmanagement.mapper.CourseMapper;
+&nbsp;import com.ghss.studentmanagement.model.Course;
+&nbsp;import com.ghss.studentmanagement.repo.CourseRepository;
+&nbsp;import com.ghss.studentmanagement.service.ICourseService;
+&nbsp;import com.ghss.studentmanagement.service.StudentManagementService;
+&nbsp;
+&nbsp;@Service
+<b class="fc">&nbsp;public class CourseServiceImpl implements ICourseService {</b>
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    CourseRepository courseRepository;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    StudentManagementService studentManagementService;
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void addCourse(CourseDto courseDto) {
+<b class="pc">&nbsp;        if (courseDto.getCourseName() != null &amp;&amp; !courseDto.getCourseName().isEmpty()) {</b>
+<b class="fc">&nbsp;            Optional&lt;Course&gt; optionalCourse = studentManagementService</b>
+<b class="fc">&nbsp;                    .findByCourseName(courseDto.getCourseName().toLowerCase());</b>
+<b class="fc">&nbsp;            if (optionalCourse.isPresent()) {</b>
+<b class="fc">&nbsp;                throw new ResourceAlreadyExistsException(&quot;Course&quot;, &quot;name&quot;, courseDto.getCourseName());</b>
+&nbsp;            } else {
+<b class="fc">&nbsp;                Course course = CourseMapper.mapToCourse(courseDto, new Course());</b>
+<b class="fc">&nbsp;                courseRepository.save(course);</b>
+<b class="fc">&nbsp;                studentManagementService.loadData();</b>
+&nbsp;            }
+&nbsp;        } else {
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Course name must not be null or empty.&quot;);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    public ResponseEntity&lt;Object&gt; getAllCourses() {
+<b class="fc">&nbsp;        List&lt;Course&gt; courses = studentManagementService.getAllCourses();</b>
+<b class="pc">&nbsp;        if (Objects.isNull(courses)||!courses.isEmpty()){</b>
+<b class="fc">&nbsp;            List&lt;CourseDto&gt; courseDtos = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;            for (Course course : courses) {</b>
+<b class="fc">&nbsp;                courseDtos.add(CourseMapper.mapToCourseDto(course, new CourseDto()));</b>
+&nbsp;            }
+<b class="fc">&nbsp;            return new ResponseEntity&lt;&gt;(courseDtos, HttpStatus.OK);</b>
+&nbsp;        }
+&nbsp;        else
+<b class="fc">&nbsp;            return new ResponseEntity&lt;&gt;(</b>
+<b class="fc">&nbsp;                    new ResponseDto(StudentManagementConstants.STATUS_404, StudentManagementConstants.MESSAGE_404),HttpStatus.NOT_FOUND);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-09-09 07:30</div>
+</div>
+</body>
+</html>

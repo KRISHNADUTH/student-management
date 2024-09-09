@@ -150,6 +150,7 @@ public class StudentManagementService {
             return new ResponseEntity<>(StudentManagementConstants.MESSAGE_NO_ENROLLMENT, HttpStatus.BAD_REQUEST);
 
         int totalNoOfCourses = courses.size();
+        System.out.println("Total number of courses for this test is .................."+totalNoOfCourses);
         List<Student> studentsEnrolledInAllCourseAndNoFee = students.stream()
                 .filter(s -> (s.getEnrollments().size() == totalNoOfCourses && s.getPendingFee() > 0))
                 .collect(Collectors.toList());
